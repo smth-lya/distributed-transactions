@@ -159,7 +159,5 @@
 - Saga Orchestration + 2PC с TransactionScope.  
 - Локальное логирование и In-Memory хранилище.  
 
-**Расширения:**  
-- Асинхронные Saga через MassTransit, интеграция с ELK/Prometheus, Kubernetes.  
 
-Документ учитывает особенности экосистемы .NET и обеспечивает гибкость для масштабирования.
+![image](https://github.com/user-attachments/assets/2f43d9aa-bd06-4e73-b177-d5fa36a42da4)
