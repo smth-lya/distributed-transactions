@@ -5,37 +5,38 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{56B61BC5-8634-4A77-A61B-D579DEEEA136}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\ApiGateway\ApiGateway.csproj", "{70C75EB7-CA76-43E5-B338-2F408388B86D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\ApiGateway\ApiGateway.csproj", "{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "src\OrderService\OrderService.csproj", "{7A4FFDD4-506F-4368-B24F-889D04D0A3F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "src\OrderService\OrderService.csproj", "{44324652-2C08-481A-8DF7-B23656CDB3A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService", "src\PaymentService\PaymentService.csproj", "{BE8F276B-D699-48AF-BD37-233830CFE314}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService", "src\PaymentService\PaymentService.csproj", "{86A903E9-C5AF-418A-B68F-F874EA5182CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryService", "src\InventoryService\InventoryService.csproj", "{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44324652-2C08-481A-8DF7-B23656CDB3A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44324652-2C08-481A-8DF7-B23656CDB3A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44324652-2C08-481A-8DF7-B23656CDB3A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44324652-2C08-481A-8DF7-B23656CDB3A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86A903E9-C5AF-418A-B68F-F874EA5182CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86A903E9-C5AF-418A-B68F-F874EA5182CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86A903E9-C5AF-418A-B68F-F874EA5182CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86A903E9-C5AF-418A-B68F-F874EA5182CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{70C75EB7-CA76-43E5-B338-2F408388B86D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70C75EB7-CA76-43E5-B338-2F408388B86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70C75EB7-CA76-43E5-B338-2F408388B86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70C75EB7-CA76-43E5-B338-2F408388B86D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A4FFDD4-506F-4368-B24F-889D04D0A3F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A4FFDD4-506F-4368-B24F-889D04D0A3F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A4FFDD4-506F-4368-B24F-889D04D0A3F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A4FFDD4-506F-4368-B24F-889D04D0A3F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE8F276B-D699-48AF-BD37-233830CFE314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE8F276B-D699-48AF-BD37-233830CFE314}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE8F276B-D699-48AF-BD37-233830CFE314}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE8F276B-D699-48AF-BD37-233830CFE314}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{70C75EB7-CA76-43E5-B338-2F408388B86D} = {56B61BC5-8634-4A77-A61B-D579DEEEA136}
-		{7A4FFDD4-506F-4368-B24F-889D04D0A3F1} = {56B61BC5-8634-4A77-A61B-D579DEEEA136}
-		{BE8F276B-D699-48AF-BD37-233830CFE314} = {56B61BC5-8634-4A77-A61B-D579DEEEA136}
 	EndGlobalSection
 EndGlobal
