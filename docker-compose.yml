@@ -1,0 +1,192 @@
+x-common-env: &common-env
+  ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+  LOG_LEVEL: Information
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - order-service
+      - payment-service
+      - inventory-service
+
+  api-gateway:
+    build: ./src/ApiGateway
+    ports:
+      - "5000:80"
+    networks:
+      - backend
+    environment:
+      <<: *common-env
+      ORDER_SERVICE_URL: http://order-service:80
+      PAYMENT_SERVICE_URL: http://payment-service:80
+      INVENTORY_SERVICE_URL: http://inventory-service:80 
+    depends_on:
+      order-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+      inventory-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  order-service:
+    build:
+      context: ./src/OrderService
+    networks:
+      - backend
+    environment:
+      <<: *common-env
+      POSTGRES_CONNECTION: ${DB_CONNECTION_STRING}
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  payment-service:
+    build:
+      context: ./src/PaymentService
+    networks:
+      - backend
+    environment:
+      <<: *common-env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  inventory-service:
+    build:
+      context: ./src/InventoryService
+    networks:
+      - backend
+    environment:
+      <<: *common-env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  postgres:
+    image: postgres:15
+    networks:
+      - backend
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    networks:
+      - backend
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    networks:
+      - backend
+    ports:
+      - "6379:6379"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.54
+    networks:
+      - backend
+    ports:
+      - "16686:16686"
+      - "6831:6831/udp"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
+      - postgres_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - backend
+      - frontend
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    networks:
+      - backend
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/log:/var/log
+      - ./infra/promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - backend
+
+  # saga-service:
+  #   build: ./src/SagaService
+  #   networks:
+  #     - backend
+  #   environment:
+  #     <<: *common-env
+  #     REDIS_HOST: redis
+  #     RABBITMQ_HOST: rabbitmq
+  #   depends_on:
+  #     - redis
+  #     - rabbitmq
+
+networks:
+  backend: 
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  logs:
+  prometheus_data:
+  grafana_data:
