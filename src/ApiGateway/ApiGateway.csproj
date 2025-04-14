@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Events\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>
