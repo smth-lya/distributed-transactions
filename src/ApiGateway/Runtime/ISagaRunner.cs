@@ -8,5 +8,5 @@ public interface ISagaRunner<TState> where TState : ISagaState
         TState state,
         IEnumerable<ISagaStep<TState>> steps,
         ISagaContext context,
-        CancellationToken ct = default);
+        CancellationToken cancellationToken = default);
 }

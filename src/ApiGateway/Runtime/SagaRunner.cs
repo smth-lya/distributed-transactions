@@ -5,102 +5,81 @@ public class SagaRunner<TState> : ISagaRunner<TState>
     where TState : ISagaState
 {
     private readonly ISagaRepository<TState> _repository;
-    private readonly IMessageBus _bus;
-    private readonly IRetryPolicy _retryPolicy;
+    private readonly ISagaStepExecutor<TState> _stepExecutor;
+    private readonly ISagaContextFactory _contextFactory;
     private readonly ILogger<SagaRunner<TState>> _logger;
+    private readonly IOutboxDispatcher _outboxDispatcher;
 
     public SagaRunner(
         ISagaRepository<TState> repository,
-        IMessageBus bus,
-        IRetryPolicy retryPolicy,
+        ISagaStepExecutor<TState> stepExecutor,
+        ISagaContextFactory contextFactory,
+        IOutboxDispatcher outboxDispatcher,
         ILogger<SagaRunner<TState>> logger)
     {
         _repository = repository;
-        _bus = bus;
-        _retryPolicy = retryPolicy;
+        _stepExecutor = stepExecutor;
+        _contextFactory = contextFactory;
+        _outboxDispatcher = outboxDispatcher;
         _logger = logger;
     }
 
     public async Task RunAsync(
-        Guid correlationId, 
-        IEnumerable<ISagaStep<TState>> steps,
-        CancellationToken ct = default) 
+        TState state, 
+        IEnumerable<ISagaStep<TState>> steps, 
+        ISagaContext context, 
+        CancellationToken cancellationToken = default) 
     {
-        var state = await _repository.LoadAsync(correlationId);
-        var context = new SagaContext(correlationId, ct);
-
         try
         {
             state.Status = SagaStatus.InProgress;
-            await _repository.SaveAsync(state);
+            await _repository.SaveAsync(state, cancellationToken);
 
             foreach (var step in steps)
             {
-                await ExecuteStepWithRetry(step, state, context);
-                await _repository.SaveAsync(state);
+                await _stepExecutor.ExecuteAsync(step, state, context, cancellationToken);
+                context.MarkStepCompleted(step.Name);
+                await _repository.SaveAsync(state, cancellationToken);
             }
 
             state.Status = SagaStatus.Completed;
+            await _repository.SaveAsync(state, cancellationToken);
+            
+            await _outboxDispatcher.FlushAsync(state.CorrelationId, cancellationToken);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            _logger.LogError(ex, $"Saga {correlationId} failed");
+            _logger.LogError(ex, $"Saga {state.CorrelationId} failed, starting compensation");
+            await CompensateAsync(state, steps.Reverse(), context, cancellationToken);
 
-            await CompensateAsync(state, steps.Reverse(), context);
-            await _bus.PublishAsync(new SagaFailedEvent(correlationId, ex));
-        }
-        finally
-        {
-            await _repository.SaveAsync(state);
+            state.Status = SagaStatus.Compensated;
+            await _repository.SaveAsync(state, cancellationToken);
+            
+            context.AddEvent(new SagaFailedEvent(state.CorrelationId, ex));
+            await _outboxDispatcher.FlushAsync(state.CorrelationId, cancellationToken);
         }
     }
-
-    private async Task ExecuteStepWithRetry(
-        ISagaStep<TState> step,
-        TState state,
-        ISagaContext context)
-    {
-        await _retryPolicy.ExecuteAsync(async () =>
-        {
-            try
-            {
-                await step.ExecuteAsync(state, context);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex,
-                    $"Step {step.GetType().Name} failed for saga {state.CorrelationId}");
-                throw;
-            }
-        });
-    }
-
 
     private async Task CompensateAsync(
         TState state,
         IEnumerable<ISagaStep<TState>> steps,
-        ISagaContext context)
+        ISagaContext context,
+        CancellationToken cancellationToken = default)
     {
         foreach (var step in steps)
         {
+            if (!context.IsStepCompleted(step.Name))
+                continue;
+
             try
             {
-                await _retryPolicy.ExecuteAsync(
-                    () => step.CompensateAsync(state, context));
+                await _stepExecutor.CompensateAsync(step, state, context, cancellationToken);
+                _logger.LogInformation("Compensated step {Step}", step.Name);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Compensation failed for step {StepName} in saga {CorrelationId}",
-                    step.GetType().Name, state.CorrelationId);
+                _logger.LogError(ex, "Compensation failed for step {Step}", step.Name);
             }
         }
-
-        state.Status = SagaStatus.Compensated;
-    }
-
-    public Task RunAsync(TState state, IEnumerable<ISagaStep<TState>> steps, ISagaContext context, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
     }
 }

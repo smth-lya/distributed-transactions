@@ -11,9 +11,9 @@
         _logger = logger;
     }
 
-    public async Task ExecuteAsync(Func<Task> action)
+    public async Task ExecuteAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
-        int attempt = 0;
+        var attempt = 0;
         while (true)
         {
             try
@@ -31,10 +31,35 @@
                     "Retry attempt {Attempt} after {Delay}ms",
                     attempt, delay.TotalMilliseconds);
 
-                await Task.Delay(delay + RandomJitter());
+                await Task.Delay(delay + RandomJitter(), cancellationToken);
             }
         }
     }
+    
+    public async Task<T> ExecuteAsync<T>(Func<Task<T>> action, CancellationToken cancellationToken = default)
+    {
+        var attempt = 0;
+        while (true)
+        {
+            try
+            {
+                return await action();
+            }
+            catch (Exception ex) when (IsTransient(ex) && attempt < _maxRetries)
+            {
+                attempt++;
+
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+
+                _logger?.LogWarning(ex,
+                    "Retry attempt {Attempt} after {Delay}ms",
+                    attempt, delay.TotalMilliseconds);
+
+                await Task.Delay(delay + RandomJitter(), cancellationToken);
+            }
+        }
+    }
+    
     private static bool IsTransient(Exception ex)
         => ex is TimeoutException or HttpRequestException;
     private static TimeSpan RandomJitter()
