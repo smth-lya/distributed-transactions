@@ -1,4 +1,8 @@
-﻿public class SagaRunner<TState> where TState : ISagaState
+﻿using ApiGateway.Core;
+using ApiGateway.Runtime;
+
+public class SagaRunner<TState> : ISagaRunner<TState> 
+    where TState : ISagaState
 {
     private readonly ISagaRepository<TState> _repository;
     private readonly IMessageBus _bus;
@@ -93,5 +97,10 @@
         }
 
         state.Status = SagaStatus.Compensated;
+    }
+
+    public Task RunAsync(TState state, IEnumerable<ISagaStep<TState>> steps, ISagaContext context, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
     }
 }
