@@ -8,19 +8,16 @@ public class SagaRunner<TState> : ISagaRunner<TState>
     private readonly ISagaStepExecutor<TState> _stepExecutor;
     private readonly ISagaContextFactory _contextFactory;
     private readonly ILogger<SagaRunner<TState>> _logger;
-    private readonly IOutboxDispatcher _outboxDispatcher;
 
     public SagaRunner(
         ISagaRepository<TState> repository,
         ISagaStepExecutor<TState> stepExecutor,
         ISagaContextFactory contextFactory,
-        IOutboxDispatcher outboxDispatcher,
         ILogger<SagaRunner<TState>> logger)
     {
         _repository = repository;
         _stepExecutor = stepExecutor;
         _contextFactory = contextFactory;
-        _outboxDispatcher = outboxDispatcher;
         _logger = logger;
     }
 
@@ -44,8 +41,6 @@ public class SagaRunner<TState> : ISagaRunner<TState>
 
             state.Status = SagaStatus.Completed;
             await _repository.SaveAsync(state, cancellationToken);
-            
-            await _outboxDispatcher.FlushAsync(state.CorrelationId, cancellationToken);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -53,10 +48,7 @@ public class SagaRunner<TState> : ISagaRunner<TState>
             await CompensateAsync(state, steps.Reverse(), context, cancellationToken);
 
             state.Status = SagaStatus.Compensated;
-            await _repository.SaveAsync(state, cancellationToken);
-            
-            context.AddEvent(new SagaFailedEvent(state.CorrelationId, ex));
-            await _outboxDispatcher.FlushAsync(state.CorrelationId, cancellationToken);
+            await _repository.SaveAsync(state, cancellationToken);            
         }
     }
 

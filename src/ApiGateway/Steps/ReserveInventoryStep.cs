@@ -12,14 +12,11 @@ public class ReserveInventoryStep : ISagaStep<OrderState>
         _bus = bus;
     }
 
-    public async Task CompensateAsync(OrderState state, ISagaContext context)
+    public string Name => throw new NotImplementedException();
+
+    public Task CompensateAsync(OrderState state, ISagaContext context)
     {
-        var request = new ReserveInventoryCommand();
-
-        await _bus.PublishAsync(request);
-
-        var responce = await context.WaitForEventAsync<InventoryReservedEvent>(
-            TimeSpan.FromSeconds(30);
+        throw new NotImplementedException();
     }
 
     public Task ExecuteAsync(OrderState state, ISagaContext context)
@@ -27,5 +24,3 @@ public class ReserveInventoryStep : ISagaStep<OrderState>
         throw new NotImplementedException();
     }
 }
-
-public c

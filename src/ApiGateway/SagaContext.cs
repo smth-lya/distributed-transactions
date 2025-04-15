@@ -10,6 +10,16 @@ public class SagaContext : ISagaContext, IDisposable
     public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
     public CancellationToken CancellationToken { get; init; } = default;
 
+    public string SagaName { get; }
+
+    public string StepName { get; }
+
+    public IMetadataStore Metadata { get; }
+
+    public IEventAwaiter EventAwaiter { get; }
+
+    public ITracingContext TracingContext { get; }
+
     public void SetData<T>(string key, T value) 
         => _data[key] = value;
 
@@ -44,5 +54,15 @@ public class SagaContext : ISagaContext, IDisposable
     {
         foreach (var disposable in _disposables)
             disposable.Dispose();
+    }
+
+    public bool IsStepCompleted(string stepName)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void MarkStepCompleted(string stepName)
+    {
+        throw new NotImplementedException();
     }
 }

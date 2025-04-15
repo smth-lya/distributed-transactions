@@ -14,9 +14,5 @@ public interface ISagaContext
     
     // Поддержка идемпотентности
     bool IsStepCompleted(string stepName);
-    void MarkStepCompleted(string stepName);
-    
-    // Outbox 
-    void AddEvent<TEvent>(TEvent @event) where TEvent : class;
-    IReadOnlyCollection<object> GetPendingEvents();
+    void MarkStepCompleted(string stepName);    
 }

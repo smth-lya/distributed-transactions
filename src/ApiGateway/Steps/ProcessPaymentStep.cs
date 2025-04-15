@@ -10,32 +10,15 @@ public class ProcessPaymentStep : ISagaStep<OrderState>
 
     public ProcessPaymentStep(IMessageBus bus) => _bus = bus;
 
+    public string Name { get; }
+
     public async Task ExecuteAsync(OrderState state, ISagaContext context)
     {
-        var paymentRequest = new ProcessPaymentCommand(
-            state.CorrelationId,
-            state.UserId,
-            state.TotalAmount,
-            Currency.USD
-        );
-
-        await _bus.PublishAsync(paymentRequest);
-        var result = await context.WaitForEventAsync<PaymentCompletedEvent>(
-            TimeSpan.FromSeconds(60));
-
-        if (result.Status != PaymentStatus.Approved)
-            throw new SagaException($"Payment declined: {result.Reason}");
-
-        state.PaymentProcessed = true;
+        throw new NotImplementedException();
     }
 
     public async Task CompensateAsync(OrderState state, ISagaContext context)
     {
-        if (!state.PaymentProcessed) return;
-
-        await _bus.PublishAsync(new RefundPaymentCommand(
-            state.CorrelationId,
-            state.TotalAmount
-        ));
+        throw new NotImplementedException();
     }
 }
