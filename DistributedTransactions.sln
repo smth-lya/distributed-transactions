@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\ApiGateway\ApiGateway.csproj", "{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Saga", "src\DT.Saga\DT.Saga.csproj", "{2F06BB4D-BCF1-4FC6-BC5F-28ECBA79F8CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "src\OrderService\OrderService.csproj", "{44324652-2C08-481A-8DF7-B23656CDB3A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Orders", "src\DT.Orders\DT.Orders.csproj", "{44324652-2C08-481A-8DF7-B23656CDB3A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService", "src\PaymentService\PaymentService.csproj", "{86A903E9-C5AF-418A-B68F-F874EA5182CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Payments", "src\DT.Payments\DT.Payments.csproj", "{86A903E9-C5AF-418A-B68F-F874EA5182CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryService", "src\InventoryService\InventoryService.csproj", "{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Inventories", "src\DT.Inventories\DT.Inventories.csproj", "{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Common", "src\DT.Common\DT.Common.csproj", "{7CBB4233-0F34-4B23-B097-60FDCD24BD42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
