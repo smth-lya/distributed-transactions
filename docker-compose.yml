@@ -16,18 +16,19 @@ services:
   saga:
     build:
       context: ./src
-      dockerfile: /DT.Saga
+      dockerfile: DT.Saga.Dockerfile
     networks:
       - backend
     depends_on:
       - order-service
       - inventory-service
       - payment-service
+      - rabbitmq
 
   order-service:
     build:
       context: ./src
-      dockerfile: /DT.Orders/Dockerfile
+      dockerfile: DT.Orders.Dockerfile
     networks:
       - backend
     environment:
@@ -41,10 +42,10 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  payment-service:
+  inventory-service:
     build:
       context: ./src
-      dockerfile: /DT.Payments/Dockerfile
+      dockerfile: DT.Inventories.Dockerfile
     networks:
       - backend
     environment:
@@ -54,10 +55,10 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  inventory-service:
+  payment-service:
     build:
       context: ./src
-      dockerfile: /DT.Inventories/Dockerfile
+      dockerfile: DT.Payments.Dockerfile
     networks:
       - backend
     environment:

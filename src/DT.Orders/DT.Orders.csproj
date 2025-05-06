@@ -18,12 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Common.csproj" />
-    <ProjectReference Include="..\DT.Common\DT.Common.csproj" />
+    <Folder Include="Infrastructure\RabbitMq\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\RabbitMq\" />
+    <ProjectReference Include="..\DT.Common\DT.Common.csproj" />
   </ItemGroup>
 
 </Project>

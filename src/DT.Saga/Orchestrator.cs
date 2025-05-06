@@ -51,7 +51,7 @@ public class Orchestrator : BackgroundService
 
     private async Task CreateRabbitMq(CancellationToken cancellationToken)
     {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
+        var factory = new ConnectionFactory() { HostName = "rabbitmq" };
         
         _connection = await factory.CreateConnectionAsync(cancellationToken: cancellationToken);
         _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
@@ -67,7 +67,7 @@ public class Orchestrator : BackgroundService
         var services = new[] { "order", "payment", "inventory" };
         foreach (var service in services)
         {
-            await _channel.QueueDeclareAsync($"{service}.cmd.q", true, false, false,
+            await _channel.QueueDeclareAsync($"{service}.cmd.q", durable: true, exclusive: false, autoDelete: false,
                 new Dictionary<string, object?>
                 {
                     ["x-dead-letter-exchange"] = "dlx.saga.cmd",
@@ -77,7 +77,7 @@ public class Orchestrator : BackgroundService
             await _channel.QueueBindAsync($"{service}.cmd.q", "saga.direct.cmd", $"{service}.*", cancellationToken: cancellationToken);
         }
         
-        await _channel.QueueDeclareAsync("orchestrator.evt.q", durable: true,
+        await _channel.QueueDeclareAsync("orchestrator.evt.q", durable: true, exclusive: false, autoDelete: false,
             arguments: new Dictionary<string, object?>
             {
                 ["x-message-ttl"] = 86400000,
@@ -87,7 +87,7 @@ public class Orchestrator : BackgroundService
         await _channel.QueueBindAsync("orchestrator.evt.q", "saga.fanout.evt", string.Empty, cancellationToken: cancellationToken);
         
         //DLQ
-        await _channel.QueueDeclareAsync("dlx.saga.cmd.q", durable: true, cancellationToken: cancellationToken);
+        await _channel.QueueDeclareAsync("dlx.saga.cmd.q", durable: true, exclusive: false, autoDelete: false, cancellationToken: cancellationToken);
         await _channel.QueueBindAsync("dlx.saga.cmd.q", "dlx.saga.cmd", string.Empty, cancellationToken: cancellationToken);
     }
 
