@@ -74,7 +74,7 @@ public class Orchestrator : BackgroundService
                     ["x-max-priority"] = 10
                 }, cancellationToken: cancellationToken);
         
-            await _channel.QueueBindAsync($"{service}.cmd.q", "saga.direct.cmd", $"{service}.*", cancellationToken: cancellationToken);
+            await _channel.QueueBindAsync($"{service}.cmd.q", "saga.direct.cmd", $"{service}", cancellationToken: cancellationToken);
         }
         
         await _channel.QueueDeclareAsync("orchestrator.evt.q", durable: true, exclusive: false, autoDelete: false,

@@ -62,7 +62,7 @@ public class InventoryWorker : BackgroundService
                 ["x-max-priority"] = 10
             }, cancellationToken: cancellationToken);
         
-        await _channel.QueueBindAsync($"inventory.cmd.q", "saga.direct.cmd", $"inventory.*", cancellationToken: cancellationToken);
+        await _channel.QueueBindAsync($"inventory.cmd.q", "saga.direct.cmd", $"inventory", cancellationToken: cancellationToken);
         
         await _channel.QueueDeclareAsync("orchestrator.evt.q", durable: true, exclusive: false, autoDelete: false, 
             arguments: new Dictionary<string, object?>

@@ -4,10 +4,12 @@ using DT.Common.Messaging;
 using DT.Orders;
 using DT.Orders.DTOs;
 using DT.Orders.Models;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<OrderWorker>();
+builder.Services.AddSingleton<OrderWorker>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<OrderWorker>());
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -19,8 +21,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/order", async (OrderRequest request, OrderWorker worker, ILogger<Program> logger) =>
+app.MapGet("/random", async ([FromServices]OrderWorker worker, [FromServices]ILogger<Program> logger) =>
 {
+    logger.LogInformation("Starting order worker /random");
+    
+    var request = new OrderRequest(Guid.NewGuid(), 10, 100);
+    
     var order = new Order
     {
         Id = Guid.NewGuid(),

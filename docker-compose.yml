@@ -26,6 +26,7 @@ services:
       - rabbitmq
 
   order-service:
+    container_name: dt-orders-1
     build:
       context: ./src
       dockerfile: DT.Orders.Dockerfile
@@ -43,6 +44,7 @@ services:
         condition: service_healthy
 
   inventory-service:
+    container_name: dt-inventories-1
     build:
       context: ./src
       dockerfile: DT.Inventories.Dockerfile
@@ -56,6 +58,7 @@ services:
         condition: service_healthy
 
   payment-service:
+    container_name: dt-payments-1
     build:
       context: ./src
       dockerfile: DT.Payments.Dockerfile

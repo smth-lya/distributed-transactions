@@ -2,7 +2,8 @@ using DT.Inventories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<InventoryWorker>();
+builder.Services.AddSingleton<InventoryWorker>();
+builder.Services.AddHostedService<InventoryWorker>(sp => sp.GetRequiredService<InventoryWorker>());
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

@@ -61,7 +61,7 @@ public class OrderWorker : BackgroundService
                 ["x-max-priority"] = 10
             }, cancellationToken: cancellationToken);
         
-        await _channel.QueueBindAsync($"order.cmd.q", "saga.direct.cmd", $"order.*", cancellationToken: cancellationToken);
+        await _channel.QueueBindAsync($"order.cmd.q", "saga.direct.cmd", $"order", cancellationToken: cancellationToken);
         
         await _channel.QueueDeclareAsync("orchestrator.evt.q", durable: true, exclusive: false, autoDelete: false,
             arguments: new Dictionary<string, object?>
@@ -88,7 +88,9 @@ public class OrderWorker : BackgroundService
 
     private Task HandleApproveOrder(ApproveOrderCommand arg)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation(new string('E', 50));
+        _logger.LogInformation(arg.CorrelationId.ToString());
+        return Task.CompletedTask;
     }
 
     private async Task SubscribeAsync<T>(string queue, Func<T, Task> handler,

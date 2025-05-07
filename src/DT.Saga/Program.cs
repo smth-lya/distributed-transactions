@@ -2,7 +2,8 @@ using DT.Saga;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<Orchestrator>();
+builder.Services.AddSingleton<Orchestrator>();
+builder.Services.AddHostedService<Orchestrator>(sp => sp.GetRequiredService<Orchestrator>());
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
