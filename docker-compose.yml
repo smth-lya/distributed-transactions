@@ -9,10 +9,8 @@ services:
       - frontend
       - backend
     depends_on:
-      - order-service
-      - payment-service
-      - inventory-service
-
+      - saga
+      - seq
   saga:
     build:
       context: ./src
@@ -102,6 +100,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      
+  seq:
+    image: datalust/seq:latest
+    ports: 
+      - "5341:5341"
+      - "8081:80"
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - seq_data:/data
 #
 #  redis:
 #    image: redis:7
@@ -110,14 +118,25 @@ services:
 #    ports:
 #      - "6379:6379"
 
-  # jaeger:
-  #   image: jaegertracing/all-in-one:1.54
-  #   networks:
-  #     - backend
-  #   ports:
-  #     - "16686:16686"
-  #     - "6831:6831/udp"
-
+  # Observability
+#  otel-collector:
+#    image: otel/opentelemetry-collector-contrib:latest
+#    command: ["--config=/etc/otel-collector-config.yaml"]
+#    volumes:
+#      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+#    restart: on-failure
+#    
+#  jaeger:
+#    image: jaegertracing/all-in-one:latest
+#    environment:
+#      COLLECTOR_OTLP-ENABLED: "true"
+#    networks:
+#      - backend
+#    ports:
+#      - "16686:16686"
+#      - "6831:6831/udp"
+#    restart: on-failure
+#    
   # prometheus:
   #   image: prom/prometheus
   #   user: "1000"
@@ -184,6 +203,4 @@ networks:
 volumes:
   postgres_data:
   rabbitmq_data:
-  logs:
-  prometheus_data:
-  grafana_data:
+  seq_data:

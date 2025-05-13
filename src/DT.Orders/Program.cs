@@ -1,12 +1,16 @@
-using DT.Common.Commands;
 using DT.Common.Events;
-using DT.Common.Messaging;
 using DT.Orders;
 using DT.Orders.DTOs;
 using DT.Orders.Models;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddSingleton<OrderWorker>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<OrderWorker>());
@@ -20,6 +24,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging();
 
 app.MapGet("/random", async ([FromServices]OrderWorker worker, [FromServices]ILogger<Program> logger) =>
 {

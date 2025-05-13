@@ -1,6 +1,12 @@
 using DT.Saga;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddSingleton<Orchestrator>();
 builder.Services.AddHostedService<Orchestrator>(sp => sp.GetRequiredService<Orchestrator>());
@@ -14,6 +20,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging();
 
 app.Run();
 
