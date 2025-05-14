@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Inventories", "src\DT.In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Common", "src\DT.Common\DT.Common.csproj", "{7CBB4233-0F34-4B23-B097-60FDCD24BD42}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.CoordinatorNode", "src\DT.CoordinatorNode\DT.CoordinatorNode.csproj", "{59B06949-4934-48DD-9D50-63A7A291F4A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CBB4233-0F34-4B23-B097-60FDCD24BD42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59B06949-4934-48DD-9D50-63A7A291F4A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B06949-4934-48DD-9D50-63A7A291F4A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59B06949-4934-48DD-9D50-63A7A291F4A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59B06949-4934-48DD-9D50-63A7A291F4A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
