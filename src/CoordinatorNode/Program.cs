@@ -1,0 +1,26 @@
+using Serilog;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console() // Логи в консоль
+    .WriteTo.File("logs/log.txt") // Логи в файл
+    .CreateLogger();
+
+app.UseHttpsRedirection();
+
+
+app.Run();
+
