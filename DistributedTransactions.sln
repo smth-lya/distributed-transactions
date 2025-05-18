@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Payments", "src\DT.Payme
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Inventories", "src\DT.Inventories\DT.Inventories.csproj", "{C8DDF1E0-3C10-4008-9FE1-FCF8AA400A45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Common", "src\DT.Common\DT.Common.csproj", "{7CBB4233-0F34-4B23-B097-60FDCD24BD42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Shared", "src\DT.Shared\DT.Shared.csproj", "{7CBB4233-0F34-4B23-B097-60FDCD24BD42}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.CoordinatorNode", "src\DT.CoordinatorNode\DT.CoordinatorNode.csproj", "{59B06949-4934-48DD-9D50-63A7A291F4A3}"
 EndProject
