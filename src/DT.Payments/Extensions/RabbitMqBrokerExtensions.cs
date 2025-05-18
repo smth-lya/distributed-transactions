@@ -1,4 +1,4 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 using DT.Payments.Messaging;
 
 namespace DT.Payments.Extensions;

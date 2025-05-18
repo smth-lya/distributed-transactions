@@ -1,4 +1,4 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 using DT.Saga.Messaging;
 
 namespace DT.Saga.Extensions;

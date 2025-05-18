@@ -1,10 +1,10 @@
 using System.Text.Json;
-using DT.Common.Interfaces;
+using DT.Shared.Interfaces;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace DT.Common.Messaging;
+namespace DT.Shared.Messaging;
 
 public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber, IHostedService, IDisposable, IAsyncDisposable
 {

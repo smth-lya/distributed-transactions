@@ -1,6 +1,6 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 
-namespace DT.Common.Commands;
+namespace DT.Shared.Commands;
 
 public record ReleaseInventoryCommand(Guid ReservationId)
     : IMessage;

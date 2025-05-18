@@ -1,4 +1,4 @@
-namespace DT.Common.Enums;
+namespace DT.Shared.Enums;
 
 public enum InventoryOperationType
 {

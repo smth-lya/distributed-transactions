@@ -1,23 +1,22 @@
 using DT.Shared.Commands;
-using DT.Shared.DTOs;
 using DT.Shared.Events;
 using DT.Shared.Interfaces;
 using DT.Shared.Messaging;
 
-namespace DT.Saga.Consumers.Orchestration;
+namespace DT.Payments.Consumers.Choreography;
 
 public class InventoryReservedConsumer : IConsumer<InventoryReservedEvent>
 {
     public InventoryReservedConsumer(IMessageSubscriber subscriber)
     {
-        subscriber.SubscribeAsync("saga.orchestration.events", this);
+        subscriber.SubscribeAsync("payment.saga.choreography.events", this);
     }
 
     public async Task Consume(ConsumeContext<InventoryReservedEvent> context)
     {
         await context.PublishAsync(
-            new ProcessPaymentCommand(10, "USD", 0),
-            "saga.orchestration.commands",
-            "payment");
+            new PaymentCompletedEvent(10),
+            "saga.choreography.events",
+            string.Empty);
     }
 }

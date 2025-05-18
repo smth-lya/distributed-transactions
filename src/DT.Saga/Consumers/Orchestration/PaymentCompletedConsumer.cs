@@ -1,8 +1,8 @@
-using DT.Common.Commands;
-using DT.Common.DTOs;
-using DT.Common.Events;
-using DT.Common.Interfaces;
-using DT.Common.Messaging;
+using DT.Shared.Commands;
+using DT.Shared.DTOs;
+using DT.Shared.Events;
+using DT.Shared.Interfaces;
+using DT.Shared.Messaging;
 
 namespace DT.Saga.Consumers.Orchestration;
 

@@ -1,4 +1,4 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 using RabbitMQ.Client;
 
 namespace DT.Payments.Messaging;
@@ -21,5 +21,12 @@ public class RabbitMqBroker : RabbitMqBrokerBase
 
         await DeclareQueueAsync("saga.orchestrator.events");
         await DeclareQueueBindAsync("saga.orchestrator.events", "saga.orchestration.events", string.Empty);
+        
+        // Choreography
+
+        await DeclareExchangeAsync("saga.choreography.events", ExchangeType.Fanout);
+        
+        await DeclareQueueAsync("payment.saga.choreography.events");
+        await DeclareQueueBindAsync("payment.saga.choreography.events", "saga.choreography.events", string.Empty);
     }
 }

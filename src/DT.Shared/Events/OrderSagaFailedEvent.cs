@@ -1,6 +1,6 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 
-namespace DT.Common.Events;
+namespace DT.Shared.Events;
 
 public record OrderSagaFailedEvent(string FailedStep, string Error)
     : IMessage;

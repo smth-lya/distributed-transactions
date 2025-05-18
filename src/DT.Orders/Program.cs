@@ -1,5 +1,5 @@
-using DT.Common.Events;
-using DT.Common.Messaging;
+using DT.Shared.Events;
+using DT.Shared.Messaging;
 using DT.Orders;
 using DT.Orders.DTOs;
 using DT.Orders.Messaging;

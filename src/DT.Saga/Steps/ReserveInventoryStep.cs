@@ -1,5 +1,5 @@
-﻿using DT.Common.Commands;
-using DT.Common.Messaging;
+﻿using DT.Shared.Commands;
+using DT.Shared.Messaging;
 using DT.Saga.Core;
 using DT.Saga.States;
 

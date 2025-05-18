@@ -1,4 +1,4 @@
-namespace DT.Common.DTOs;
+namespace DT.Shared.DTOs;
 
 public record ShippingItem(
     int ProductId,

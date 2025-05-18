@@ -1,6 +1,6 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 
-namespace DT.Common.Interfaces;
+namespace DT.Shared.Interfaces;
 
 public interface IConsumer<T> where T : IMessage
 {

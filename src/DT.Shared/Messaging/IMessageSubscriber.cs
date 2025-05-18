@@ -1,6 +1,6 @@
-using DT.Common.Interfaces;
+using DT.Shared.Interfaces;
 
-namespace DT.Common.Messaging;
+namespace DT.Shared.Messaging;
 
 public interface IMessageSubscriber
 {

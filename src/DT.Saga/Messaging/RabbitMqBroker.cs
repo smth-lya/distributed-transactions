@@ -1,4 +1,4 @@
-using DT.Common.Messaging;
+using DT.Shared.Messaging;
 using RabbitMQ.Client;
 
 namespace DT.Saga.Messaging;

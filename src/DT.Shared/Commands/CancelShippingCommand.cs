@@ -1,4 +1,4 @@
-namespace DT.Common.Commands;
+namespace DT.Shared.Commands;
 
 public record CancelShippingCommand(
     Guid ShippingId,

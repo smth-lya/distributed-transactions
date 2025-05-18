@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="Consumers\Choreography\" />
     <Folder Include="Consumers\TwoPhaseCommit\" />
   </ItemGroup>
 

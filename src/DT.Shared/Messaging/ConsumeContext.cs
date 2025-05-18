@@ -1,4 +1,4 @@
-namespace DT.Common.Messaging;
+namespace DT.Shared.Messaging;
 
 public class ConsumeContext<TMessage> where TMessage : IMessage
 {
