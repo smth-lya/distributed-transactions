@@ -8,7 +8,6 @@ builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration);
 });
 
-
 builder.Services.AddRabbitMq();
 
 var app = builder.Build();

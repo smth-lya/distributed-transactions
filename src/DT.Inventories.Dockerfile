@@ -7,11 +7,11 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY DT.Common/DT.Common.csproj DT.Common/
+COPY DT.Shared/DT.Shared.csproj DT.Shared/
 COPY DT.Inventories/DT.Inventories.csproj DT.Inventories/
 RUN dotnet restore DT.Inventories/DT.Inventories.csproj
 
-COPY DT.Common DT.Common
+COPY DT.Shared DT.Shared
 COPY DT.Inventories DT.Inventories 
 RUN dotnet build DT.Inventories/DT.Inventories.csproj -c $BUILD_CONFIGURATION -o /app/build
     

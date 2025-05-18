@@ -97,7 +97,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
    
     protected virtual async Task CreateAsync(CancellationToken cancellationToken = default)
     {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
+        var factory = new ConnectionFactory() { HostName = "rabbitmq" };
         
         _connection = await factory.CreateConnectionAsync(cancellationToken: cancellationToken);
         _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
@@ -131,13 +131,16 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
     
     public void Dispose()
     {
-        _channel.Dispose();
-        _connection.Dispose();
+        _channel?.Dispose();
+        _connection?.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _channel.DisposeAsync();
-        await _connection.DisposeAsync();
+        if (_connection != null)
+            await _connection.DisposeAsync();
+
+        if (_channel != null)
+            await _channel.DisposeAsync();
     }
 }

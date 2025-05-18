@@ -23,6 +23,17 @@ services:
       - payment-service
       - rabbitmq
 
+  coordinator:
+    build:
+      context: ./src
+      dockerfile: DT.CoordinatorNode.Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - order-service
+      - inventory-service
+      - payment-service
+
   order-service:
     container_name: dt-orders-1
     build:

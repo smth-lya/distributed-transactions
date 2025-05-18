@@ -6,11 +6,11 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY DT.Common/DT.Common.csproj DT.Common/
+COPY DT.Shared/DT.Shared.csproj DT.Shared/
 COPY DT.Saga/DT.Saga.csproj DT.Saga/
 RUN dotnet restore DT.Saga/DT.Saga.csproj
 
-COPY DT.Common DT.Common
+COPY DT.Shared DT.Shared
 COPY DT.Saga DT.Saga
 RUN dotnet build DT.Saga/DT.Saga.csproj -c $BUILD_CONFIGURATION -o /app/build
 

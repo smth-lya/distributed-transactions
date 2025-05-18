@@ -2,6 +2,7 @@ using DT.Shared.Events;
 using DT.Shared.Messaging;
 using DT.Orders;
 using DT.Orders.DTOs;
+using DT.Orders.Extensions;
 using DT.Orders.Messaging;
 using DT.Orders.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,7 @@ builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration);
 });
 
-builder.Services.AddRazorPages();
-
-builder.Services.AddOpenApi();
+builder.Services.AddRabbitMq();
 
 var app = builder.Build();
 
