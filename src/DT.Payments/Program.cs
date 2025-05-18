@@ -1,3 +1,4 @@
+using DT.Payments.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,7 @@ builder.Host.UseSerilog((context, config) =>
 });
 
 
-builder.Services.AddSingleton<PaymentWorker>();
-builder.Services.AddHostedService<PaymentWorker>(sp => sp.GetRequiredService<PaymentWorker>());
-builder.Services.AddOpenApi();
+builder.Services.AddRabbitMq();
 
 var app = builder.Build();
 

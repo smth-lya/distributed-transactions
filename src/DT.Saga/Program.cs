@@ -1,4 +1,5 @@
 using DT.Saga;
+using DT.Saga.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,7 @@ builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration);
 });
 
-builder.Services.AddSingleton<Orchestrator>();
-builder.Services.AddHostedService<Orchestrator>(sp => sp.GetRequiredService<Orchestrator>());
-builder.Services.AddOpenApi();
+builder.Services.AddRabbitMq(); 
 
 var app = builder.Build();
 

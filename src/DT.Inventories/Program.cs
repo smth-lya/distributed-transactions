@@ -1,4 +1,4 @@
-using DT.Inventories;
+using DT.Inventories.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +8,7 @@ builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration);
 });
 
-builder.Services.AddSingleton<InventoryWorker>();
-builder.Services.AddHostedService<InventoryWorker>(sp => sp.GetRequiredService<InventoryWorker>());
-builder.Services.AddOpenApi();
+builder.Services.AddRabbitMq();
 
 var app = builder.Build();
 

@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\RabbitMq\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="Consumers\Choreography\" />
+    <Folder Include="Consumers\TwoPhaseCommit\" />
   </ItemGroup>
 
   <ItemGroup>

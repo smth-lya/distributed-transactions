@@ -7,4 +7,4 @@ public record OrderCreatedEvent(
     Guid ProductId,
     int Quantity,
     decimal TotalPrice
-) : Message;
+) : IMessage;

@@ -2,5 +2,5 @@ using DT.Common.Messaging;
 
 namespace DT.Common.Events;
 
-public record PaymentCompletedEvent(string TransactionId, decimal Amount)
-    : Message;
+public record PaymentCompletedEvent(decimal Amount)
+    : IMessage;

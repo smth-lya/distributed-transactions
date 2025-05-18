@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
-namespace InventoryService.Controllers;
+namespace DT.Inventories.Controllers;
 
 [ApiController]
 [Route("api/participant")]

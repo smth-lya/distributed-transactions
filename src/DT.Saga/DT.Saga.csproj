@@ -21,4 +21,9 @@
     <ProjectReference Include="..\DT.Shared\DT.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Consumers\Choreography\" />
+    <Folder Include="Consumers\TwoPhaseCommit\" />
+  </ItemGroup>
+
 </Project>

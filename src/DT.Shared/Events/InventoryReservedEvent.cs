@@ -3,5 +3,5 @@ using DT.Common.Messaging;
 
 namespace DT.Common.Events;
 
-public record InventoryReservedEvent(Guid ReservationId, List<InventoryItem> ReservedItems)
-    : Message;
+public record InventoryReservedEvent(List<InventoryItem> ReservedItems)
+    : IMessage;
