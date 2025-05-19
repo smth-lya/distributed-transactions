@@ -1,10 +1,7 @@
 using DT.Shared.Events;
 using DT.Shared.Messaging;
-using DT.Orders;
-using DT.Orders.DTOs;
-using DT.Orders.Extensions;
-using DT.Orders.Messaging;
-using DT.Orders.Models;
+using DT.Orders.API.Extensions;
+using DT.Orders.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -15,8 +12,10 @@ builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration);
 });
 
-builder.Services.AddRabbitMq();
-
+builder.Services
+    .AddApplication(builder.Configuration)
+    .AddInfrastructure(builder.Configuration);
+builder.Services.AddControllers();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -27,31 +26,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseSerilogRequestLogging();
-
-app.MapGet("/random", async ([FromServices]IMessagePublisher publisher, [FromServices]ILogger<Program> logger) =>
-{
-    logger.LogInformation("Starting order worker /random");
-    
-    var request = new OrderRequest(Guid.NewGuid(), 10, 100);
-    
-    var order = new Order
-    {
-        Id = Guid.NewGuid(),
-        ProductId = request.ProductId,
-        Quantity = request.Quantity,
-        TotalPrice = request.TotalPrice
-    };
-
-    var message = new OrderCreatedEvent
-    (
-        order.Id,
-        request.ProductId,
-        request.Quantity,
-        request.TotalPrice
-    );
-
-    await publisher.PublishAsync(message, "saga.orchestration.events",  string.Empty,Guid.NewGuid().ToString());
-});
 
 app.Run();
 

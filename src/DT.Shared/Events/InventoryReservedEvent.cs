@@ -3,5 +3,5 @@ using DT.Shared.Messaging;
 
 namespace DT.Shared.Events;
 
-public record InventoryReservedEvent(List<InventoryItem> ReservedItems)
+public record InventoryReservedEvent(List<InventoryItemShared> ReservedItems)
     : IMessage;

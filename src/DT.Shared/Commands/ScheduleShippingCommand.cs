@@ -3,5 +3,5 @@ using DT.Shared.Messaging;
 
 namespace DT.Shared.Commands;
 
-public record ScheduleShippingCommand(Address DeliveryAddress, List<ShippingItem> Items)
+public record ScheduleShippingCommand(Address DeliveryAddress, List<ShippingItemShared> Items)
     : IMessage;

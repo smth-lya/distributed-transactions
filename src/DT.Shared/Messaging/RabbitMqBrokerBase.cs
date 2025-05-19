@@ -35,7 +35,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         {
             ContentType = "application/json",
             Persistent = true,
-            CorrelationId = correlationId ?? Guid.NewGuid().ToString(),
+            CorrelationId = string.IsNullOrEmpty(correlationId) ? Guid.NewGuid().ToString() : correlationId,
             Headers = new Dictionary<string, object?>
             {
                 ["MessageType"] = typeof(T).Name,

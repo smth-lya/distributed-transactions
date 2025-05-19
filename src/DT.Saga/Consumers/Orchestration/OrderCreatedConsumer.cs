@@ -12,11 +12,11 @@ public class OrderCreatedConsumer : IConsumer<OrderCreatedEvent>
     {
         subscriber.SubscribeAsync("saga.orchestration.events", this);
     }
-
+    
     public async Task Consume(ConsumeContext<OrderCreatedEvent> context)
     {
         await context.PublishAsync(
-            new ReserveInventoryCommand([new InventoryItem(context.Message.ProductId, context.Message.Quantity)]),
+            new ReserveInventoryCommand(context.Message.Items.Select(i => new InventoryItemShared(i.ProductId, i.Quantity)).ToList()),
             "saga.orchestration.commands",
             "inventory");
     }
