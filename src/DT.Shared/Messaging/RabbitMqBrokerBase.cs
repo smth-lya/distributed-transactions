@@ -27,7 +27,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         T message, 
         string exchange, 
         string routingKey, 
-        string? correlationId, 
+        Guid? correlationId, 
         CancellationToken cancellationToken = default) where T : IMessage
     {
         var body = JsonSerializer.SerializeToUtf8Bytes(message);
@@ -35,7 +35,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         {
             ContentType = "application/json",
             Persistent = true,
-            CorrelationId = string.IsNullOrEmpty(correlationId) ? Guid.NewGuid().ToString() : correlationId,
+            CorrelationId = correlationId?.ToString() ?? Guid.NewGuid().ToString(),
             Headers = new Dictionary<string, object?>
             {
                 ["MessageType"] = typeof(T).Name,
@@ -76,7 +76,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
                 var context = new ConsumeContext<T>()
                 {
                     Message = message,
-                    CorrelationId = correlationId,
+                    CorrelationId = Guid.Parse(correlationId),
                     Publisher = this
                 };
                 

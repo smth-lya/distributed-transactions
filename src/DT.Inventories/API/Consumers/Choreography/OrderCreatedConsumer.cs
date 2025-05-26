@@ -1,5 +1,7 @@
 using DT.Shared.DTOs;
 using DT.Shared.Events;
+using DT.Shared.Events.Inventory;
+using DT.Shared.Events.Order;
 using DT.Shared.Interfaces;
 using DT.Shared.Messaging;
 

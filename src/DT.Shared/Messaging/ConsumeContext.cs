@@ -3,7 +3,7 @@ namespace DT.Shared.Messaging;
 public class ConsumeContext<TMessage> where TMessage : IMessage
 {
     public required TMessage Message { get; init; }
-    public required string CorrelationId { get; init; }
+    public required Guid CorrelationId { get; init; }
     
     public required IMessagePublisher Publisher { get; init; }
 

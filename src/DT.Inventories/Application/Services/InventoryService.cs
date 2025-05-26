@@ -1,5 +1,6 @@
 using DT.Inventories.Domain.Contracts.Repositories;
 using DT.Inventories.Domain.Contracts.Services;
+using DT.Inventories.Domain.Models;
 
 namespace DT.Inventories.Application.Services;
 
@@ -8,6 +9,9 @@ public class InventoryService : IInventoryService
     private readonly IInventoryRepository _inventoryRepository;
     private readonly ILogger<InventoryService> _logger;
 
+    // TODO: Возможно, как-то по-другому обыграть в будущем.
+    private readonly Guid _defaultWarehouseId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    
     public InventoryService(IInventoryRepository inventoryRepository, ILogger<InventoryService> logger)
     {
         _inventoryRepository = inventoryRepository;
@@ -16,31 +20,35 @@ public class InventoryService : IInventoryService
     
     public async Task<bool> ReserveItemAsync(Guid orderId, IDictionary<Guid, int>  items)
     {
-        foreach (var item in items)
+        try
         {
-            var stock = await _inventoryRepository.GetByProductIdAsync(item.Key);
-            if (stock == null || stock.Quantity < item.Value)
-                return false;
+            var copyOfItems = items.ToDictionary(k => k.Key, v => v.Value);
+            await _inventoryRepository.ReserveItemsAsync(orderId, copyOfItems);
             
-            stock.Reserve(item.Value);
-            await _inventoryRepository.UpdateAsync(stock);
+            _logger.LogInformation("Successfully reserved items for OrderId: {OrderId}", orderId);
+            return true;
         }
-        
-        return true;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to reserve items for OrderId: {OrderId}", orderId);
+            return false;
+        }
     }
 
-    public async Task<bool> ReleaseItemsAsync(Guid orderId, IDictionary<Guid, int> items)
+    public async Task<bool> ReleaseItemsAsync(Guid orderId)
     {
-        foreach (var item in items)
+        _logger.LogInformation("Attempting to release reserved items for OrderId: {OrderId}", orderId);
+
+        try
         {
-            var stock = await _inventoryRepository.GetByProductIdAsync(item.Key);
-            if (stock == null || stock.Reserved < item.Value)
-                return false;
-            
-            stock.Release(item.Value);
-            await _inventoryRepository.UpdateAsync(stock);
+            await _inventoryRepository.ReleaseReservationAsync(orderId);
+            _logger.LogInformation("Successfully released reservation for OrderId: {OrderId}", orderId);
+            return true;
         }
-        
-        return true;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to release reservation for OrderId: {OrderId}", orderId);
+            return false;
+        }
     }
 }

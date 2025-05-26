@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="API\" />
+    <Folder Include="Application\DTOs\" />
   </ItemGroup>
 
 

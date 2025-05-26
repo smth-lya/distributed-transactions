@@ -10,8 +10,9 @@ builder.Host.UseSerilog((context, config) =>
 
 builder.Services
     .AddApplication(builder.Configuration)
-    .AddInfrastructure(builder.Configuration);
-
+    .AddInfrastructure(builder.Configuration)
+    .AddConsumers();
+    
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

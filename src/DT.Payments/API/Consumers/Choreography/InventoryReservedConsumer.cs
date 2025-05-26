@@ -1,4 +1,6 @@
 using DT.Shared.Events;
+using DT.Shared.Events.Inventory;
+using DT.Shared.Events.Payment;
 using DT.Shared.Interfaces;
 using DT.Shared.Messaging;
 

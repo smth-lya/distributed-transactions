@@ -1,6 +1,7 @@
 using DT.Orders.Application.DTOs;
-using DT.Orders.Domain.Contracts.Repositories;
 using DT.Orders.Domain.Contracts.Services;
+using DT.Orders.Domain.Contracts.UnitOfWorks;
+using DT.Orders.Domain.Enums;
 using DT.Orders.Domain.Exceptions;
 using DT.Orders.Domain.Models;
 
@@ -8,45 +9,55 @@ namespace DT.Orders.Application.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<OrderService> _logger;
     
-    public OrderService(IOrderRepository orderRepository, ILogger<OrderService> logger)
+    public OrderService(IUnitOfWork unitOfWork, ILogger<OrderService> logger)
     {
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
     public async Task<Order?> GetOrderByIdAsync(Guid id)
-    {
-        return await _orderRepository.GetByIdAsync(id);
-    }
+        => await _unitOfWork.Orders.GetByIdAsync(id);
 
-    public async Task<Order> CreateOrderAsync(OrderCreateDto createDto)
+    public async Task<Guid> CreateOrderAsync(OrderCreateDto createDto)
     {
-        var orderId = Guid.NewGuid();
+        ArgumentNullException.ThrowIfNull(createDto, nameof(createDto));
+        
+        // Лучше сделать вытаскивать названия продуктов из отдельного сервиса или репозитория,
+        // здесь "Unknown product name" - пока просто заглушка, которую лучше убрать или заменить
+        var orderItems = createDto.Items.Select(i => 
+            new OrderItem(
+                i.ProductId, 
+                "Unknown product name", // TODO: Сделать получение реального имени продукта
+                i.Quantity, 
+                i.Price
+            )).ToList();
         
         var order = new Order(
-            orderId,
             createDto.CustomerId,
-            createDto.Items.Select(i => new OrderItem(orderId, i.ProductId, i.Quantity, i.Price))
+            createDto.ShippingAddress,
+            orderItems
             );
         
-        await _orderRepository.AddAsync(order);
-        return order;
-    }
-
-    public async Task ReserveOrderAsync(Guid orderId)
-    {
-        var order = await _orderRepository.GetByIdAsync(orderId)
-                    ?? throw new OrderNotFoundException(orderId);
+        await _unitOfWork.Orders.AddAsync(order);
+        await _unitOfWork.CommitAsync();
         
-        order.MarkAsReserved();
-        await _orderRepository.UpdateAsync(order);
+        return order.Id;
     }
 
-    public async Task CancelOrderAsync(Guid orderId)
+    public async Task UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus, string reason)
     {
-        throw new NotImplementedException();
+        var order = await _unitOfWork.Orders.GetByIdAsync(orderId);
+        if (order == null)
+        {
+            throw new OrderNotFoundException(orderId);
+        }
+        
+        order.ChangeStatus(newStatus, reason);
+        
+        await _unitOfWork.Orders.UpdateAsync(order);
+        await _unitOfWork.CommitAsync();
     }
 }

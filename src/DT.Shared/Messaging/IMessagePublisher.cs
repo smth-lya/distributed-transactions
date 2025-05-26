@@ -6,6 +6,6 @@ public interface IMessagePublisher
         T message,
         string exchange,
         string routingKey,
-        string? correlationId,
+        Guid? correlationId,
         CancellationToken cancellationToken = default) where T : IMessage;
 }

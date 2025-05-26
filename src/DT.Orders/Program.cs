@@ -14,7 +14,9 @@ builder.Host.UseSerilog((context, config) =>
 
 builder.Services
     .AddApplication(builder.Configuration)
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddControllers();
+
 builder.Services.AddControllers();
 var app = builder.Build();
 

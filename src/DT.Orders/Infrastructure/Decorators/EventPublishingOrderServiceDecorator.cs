@@ -1,8 +1,10 @@
 using DT.Orders.Application.DTOs;
 using DT.Orders.Domain.Contracts.Services;
+using DT.Orders.Domain.Enums;
 using DT.Orders.Domain.Models;
 using DT.Shared.DTOs;
 using DT.Shared.Events;
+using DT.Shared.Events.Order;
 using DT.Shared.Messaging;
 
 namespace DT.Orders.Infrastructure.Decorators;
@@ -23,23 +25,40 @@ public class EventPublishingOrderServiceDecorator : IOrderService
 
     public Task<Order?> GetOrderByIdAsync(Guid id)
         => _inner.GetOrderByIdAsync(id);
-    public async Task<Order> CreateOrderAsync(OrderCreateDto dto)
+    
+    public async Task<Guid> CreateOrderAsync(OrderCreateDto dto)
     {
-        var order = await _inner.CreateOrderAsync(dto);
-        await _publisher.PublishAsync(
-            new OrderCreatedEvent(
-                order.Id, 
-                dto.Items.Select(i => new OrderItemShared(i.ProductId, i.Quantity, i.Price)).ToList()
-                ),
-            "saga.orchestration.events",
-            string.Empty,
-            Guid.NewGuid().ToString());
-        return order;
+        ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+        
+        var orderId = await _inner.CreateOrderAsync(dto);
+        var publishingEvent = new OrderCreatedEvent(
+            orderId,
+            dto.Items
+                .Select(i => new OrderItemShared(i.ProductId, i.Quantity, i.Price))
+                .ToList()
+        );
+
+        try
+        {
+            await _publisher.PublishAsync(
+                publishingEvent,
+                "saga.orchestration.events",
+                string.Empty,
+                Guid.NewGuid()
+            );
+            
+            _logger.LogInformation("Published OrderCreatedEvent for OrderId: {OrderId}", orderId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to publish OrderCreatedEvent for OrderId: {OrderId}", orderId);
+            // TODO: Здесь реализовать retry-политику или оповещение (через Dead Letter Queue)
+            throw;
+        }
+        
+        return orderId;
     }
-
-    public Task ReserveOrderAsync(Guid orderId)
-        => _inner.ReserveOrderAsync(orderId);
-
-    public Task CancelOrderAsync(Guid orderId)
-        => _inner.CancelOrderAsync(orderId);
+    
+    public async Task UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus, string reason)
+        => await _inner.UpdateOrderStatusAsync(orderId, newStatus, reason);
 }

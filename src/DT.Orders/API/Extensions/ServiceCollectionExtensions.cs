@@ -1,9 +1,14 @@
+using DT.Orders.API.Consumers.Orchestration;
 using DT.Orders.Application.Services;
 using DT.Orders.Domain.Contracts.Repositories;
 using DT.Orders.Domain.Contracts.Services;
+using DT.Orders.Domain.Contracts.UnitOfWorks;
 using DT.Orders.Infrastructure.Database;
 using DT.Orders.Infrastructure.Database.Repositories;
+using DT.Orders.Infrastructure.Database.UnitOfWorks;
 using DT.Orders.Infrastructure.Decorators;
+using DT.Orders.Infrastructure.Messaging;
+using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace DT.Orders.API.Extensions;
@@ -25,11 +30,28 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<OrderDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("POSTGRES_CONNECTION")));
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.Decorate<IOrderService, EventPublishingOrderServiceDecorator>();
 
         services.AddRabbitMq();
         
         return services;
+    }
+
+    public static IServiceCollection AddConsumers(this IServiceCollection services)
+    {
+        services.AddHostedService<OrderCompleteConsumer>();
+        
+        return services;
+    }
+    
+    private static void AddRabbitMq(this IServiceCollection services)
+    {
+        services.AddSingleton<RabbitMqBroker>();
+        services.AddSingleton<IMessagePublisher>(sp => sp.GetRequiredService<RabbitMqBroker>());
+        services.AddSingleton<IMessageSubscriber>(sp => sp.GetRequiredService<RabbitMqBroker>());
+        services.AddHostedService(sp => sp.GetRequiredService<RabbitMqBroker>());
     }
 }
