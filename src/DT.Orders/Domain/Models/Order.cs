@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using DT.Orders.Domain.Enums;
 using DT.Orders.Domain.Exceptions;
 
@@ -31,14 +32,9 @@ public class Order
     public Address ShippingAddress { get; private set; }
     public decimal TotalAmount { get; private set; }
     
+    
     public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
     public IReadOnlyCollection<OrderStatusChange> StatusChanges => _statusChanges.AsReadOnly();
-
-    public void AddItem(OrderItem item)
-    {
-        _items.Add(item);
-        CalculateTotalAmount();
-    }
 
     private void CalculateTotalAmount()
     {

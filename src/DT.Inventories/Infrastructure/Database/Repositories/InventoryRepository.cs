@@ -93,6 +93,8 @@ public class InventoryRepository : IInventoryRepository
                     .Where(i => i.ProductId == productId)
                     .FirstAsync();
 
+                
+                
                 if (inventoryItem.Quantity - inventoryItem.Reserved < quantity)
                 {
                     throw new InsufficientStockException(productId, 
@@ -112,8 +114,9 @@ public class InventoryRepository : IInventoryRepository
                     Status = ReservationStatus.Active,
                     ExpiresAt = DateTime.UtcNow.AddHours(24),
                 };
+
                 await _context.Reservations.AddAsync(reservation);
-                
+
                 // record movement
                 await _context.InventoryMovements.AddAsync(new InventoryMovement()
                 {
@@ -121,7 +124,7 @@ public class InventoryRepository : IInventoryRepository
                     WarehouseId = inventoryItem.WarehouseId,
                     QuantityDelta = -quantity,
                     MovementType = MovementType.Reservation,
-                    RelatedOrderId = orderId,
+                    RelatedOrderId = orderId
                 });
             }
             

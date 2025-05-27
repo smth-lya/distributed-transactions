@@ -28,4 +28,8 @@
     <ProjectReference Include="..\DT.Shared\DT.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\Database\UnitOfWorks\" />
+  </ItemGroup>
+
 </Project>

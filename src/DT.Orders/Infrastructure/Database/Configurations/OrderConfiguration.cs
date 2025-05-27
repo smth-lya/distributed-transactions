@@ -26,6 +26,10 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasConversion<string>()
             .HasMaxLength(20)
             .IsRequired();
+
+        // builder.Property(o => o.M)
+        //     .IsRowVersion()
+        //     .IsConcurrencyToken();
         
         builder.Property(o => o.CreatedAt)
             .HasColumnName("created_at")

@@ -1,4 +1,6 @@
+using System.Text.Json;
 using DT.Saga.Domain.Contracts.Repositories;
+using DT.Saga.Domain.Enums;
 using DT.Saga.Domain.Models;
 using DT.Shared.Commands.Inventory;
 using DT.Shared.DTOs;
@@ -51,6 +53,16 @@ public class OrderCreatedConsumer : IConsumer<OrderCreatedEvent>, IHostedService
         
             await repository.AddSagaAsync(saga);
         
+            await repository.AddEventAsync(new SagaEvent()
+            {
+                Id = Guid.NewGuid(),
+                CorrelationId = context.CorrelationId,
+                EventType = nameof(OrderCreatedEvent),
+                Payload = JsonSerializer.Serialize(context.Message),
+                OccurredAt = DateTime.UtcNow,
+                IsProcessed = true
+            });
+            
             _logger.LogInformation("SagaState created for OrderId {OrderId}", context.Message.OrderId);
         
             var reserveCommand = new InventoryReserveCommand(
@@ -60,10 +72,22 @@ public class OrderCreatedConsumer : IConsumer<OrderCreatedEvent>, IHostedService
                     .ToList()
             );
         
+            await repository.AddCommandAsync(new SagaCommand()
+            {
+                Id = Guid.NewGuid(),
+                CorrelationId = context.CorrelationId,
+                CommandType = nameof(InventoryReserveCommand),
+                Payload = JsonSerializer.Serialize(reserveCommand),
+                Status = CommandStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+            });
+            
             await context.PublishAsync(
                 reserveCommand,
                 "saga.orchestration.commands",
                 "inventory");
+
+
         }
         catch (Exception ex)
         {

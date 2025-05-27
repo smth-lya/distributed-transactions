@@ -20,6 +20,7 @@ public class OrderRepository : IOrderRepository
         return await _context.Orders
             .Include(o => o.Items)
             .Include(o => o.StatusChanges)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(o => o.Id == orderId);
     }
 
@@ -48,18 +49,14 @@ public class OrderRepository : IOrderRepository
             throw new Exception("Order already exists");
         }
 
-        await _context.Orders.AddAsync(order);
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Order order)
     {
-        var loadedOrder = await _context.Orders.FindAsync(order.Id);
-        if (loadedOrder is null)
-        {
-            throw new OrderNotFoundException(order.Id);
-        }
-        
         _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid orderId)
@@ -71,5 +68,6 @@ public class OrderRepository : IOrderRepository
         }
      
         _context.Orders.Remove(order);
+        await _context.SaveChangesAsync();
     }
 }

@@ -1,5 +1,6 @@
 using DT.Inventories.API.Extensions;
 using DT.Inventories.Infrastructure.Database;
+using DT.Inventories.Infrastructure.Database.Seed;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     MigrateDatabase(app);
+    SeedData(app);
 }
 
 app.UseHttpsRedirection();
@@ -38,4 +40,12 @@ static void MigrateDatabase(WebApplication app)
     {
         dbContext.Database.Migrate();
     }
+}
+
+static void SeedData(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
+    
+    InventorySeedData.Seed(dbContext);
 }

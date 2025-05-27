@@ -1,5 +1,4 @@
 using DT.Orders.Domain.Contracts.Services;
-using DT.Orders.Domain.Contracts.UnitOfWorks;
 using DT.Orders.Domain.Enums;
 using DT.Shared.Commands.Order;
 using DT.Shared.Events.Order;
@@ -23,12 +22,12 @@ public class OrderCompleteConsumer : IConsumer<OrderCompleteCommand>, IHostedSer
 
     public async Task Consume(ConsumeContext<OrderCompleteCommand> context)
     {
-        _logger.LogInformation("[Order Service] [OrderCompleteConsumer] Success transaction ended: {Message}" ,new string('F', 50));
-        
         using var scope = _serviceScopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IOrderService>();
         
         await service.UpdateOrderStatusAsync(context.Message.OrderId, OrderStatus.Delivered, "Completed");
+        
+        _logger.LogInformation("[Order Service] [OrderCompleteConsumer] Success transaction ended: {Message}" ,new string('F', 50));
         
         await context.PublishAsync(
             new OrderCompletedEvent(),

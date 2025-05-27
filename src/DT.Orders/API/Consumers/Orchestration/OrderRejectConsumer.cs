@@ -1,5 +1,4 @@
 using DT.Orders.Domain.Contracts.Services;
-using DT.Orders.Domain.Contracts.UnitOfWorks;
 using DT.Orders.Domain.Enums;
 using DT.Shared.Commands.Order;
 using DT.Shared.Events.Order;

@@ -2,10 +2,8 @@ using DT.Orders.API.Consumers.Orchestration;
 using DT.Orders.Application.Services;
 using DT.Orders.Domain.Contracts.Repositories;
 using DT.Orders.Domain.Contracts.Services;
-using DT.Orders.Domain.Contracts.UnitOfWorks;
 using DT.Orders.Infrastructure.Database;
 using DT.Orders.Infrastructure.Database.Repositories;
-using DT.Orders.Infrastructure.Database.UnitOfWorks;
 using DT.Orders.Infrastructure.Decorators;
 using DT.Orders.Infrastructure.Messaging;
 using DT.Shared.Messaging;
@@ -30,8 +28,6 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<OrderDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("POSTGRES_CONNECTION")));
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.Decorate<IOrderService, EventPublishingOrderServiceDecorator>();
 

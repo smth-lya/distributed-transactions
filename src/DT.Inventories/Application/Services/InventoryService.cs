@@ -9,9 +9,6 @@ public class InventoryService : IInventoryService
     private readonly IInventoryRepository _inventoryRepository;
     private readonly ILogger<InventoryService> _logger;
 
-    // TODO: Возможно, как-то по-другому обыграть в будущем.
-    private readonly Guid _defaultWarehouseId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-    
     public InventoryService(IInventoryRepository inventoryRepository, ILogger<InventoryService> logger)
     {
         _inventoryRepository = inventoryRepository;

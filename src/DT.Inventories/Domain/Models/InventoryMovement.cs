@@ -11,7 +11,6 @@ public class InventoryMovement
     public MovementType MovementType { get; set; }
     public Guid? RelatedOrderId { get; set; } 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public string CreatedBy { get; set; }
     
     public Product Product { get; set; }
     public Warehouse Warehouse { get; set; }

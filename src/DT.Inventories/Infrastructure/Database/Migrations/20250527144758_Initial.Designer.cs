@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DT.Inventories.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20250527113248_Initial")]
+    [Migration("20250527144758_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -70,7 +70,7 @@ namespace DT.Inventories.Infrastructure.Database.Migrations
                         {
                             t.HasCheckConstraint("ck_inventory_items_quantity_non_negative", "quantity >= 0");
 
-                            t.HasCheckConstraint("ck_inventory_items_reserved_lte_quantity", "reserved >= quantity");
+                            t.HasCheckConstraint("ck_inventory_items_reserved_lte_quantity", "reserved <= quantity");
                         });
                 });
 
@@ -87,10 +87,6 @@ namespace DT.Inventories.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("MovementType")
                         .IsRequired()

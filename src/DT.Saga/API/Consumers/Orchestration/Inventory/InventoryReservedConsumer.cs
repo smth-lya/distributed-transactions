@@ -53,6 +53,8 @@ public class InventoryReservedConsumer : IConsumer<InventoryReservedEvent>, IHos
             var orderCreatedEvent  = saga.Events
                 .FirstOrDefault(e => e is { EventType: nameof(OrderCreatedEvent), IsProcessed: true });
            
+            
+            
             if (orderCreatedEvent  == null)
             {
                 _logger.LogError("OrderCreatedEvent not found for saga {CorrelationId}", context.CorrelationId);

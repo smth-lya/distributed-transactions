@@ -83,7 +83,7 @@ namespace DT.Inventories.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("pk_inventory_items", x => x.id);
                     table.CheckConstraint("ck_inventory_items_quantity_non_negative", "quantity >= 0");
-                    table.CheckConstraint("ck_inventory_items_reserved_lte_quantity", "reserved >= quantity");
+                    table.CheckConstraint("ck_inventory_items_reserved_lte_quantity", "reserved <= quantity");
                     table.ForeignKey(
                         name: "fk_inventory_items_products",
                         column: x => x.ProductId,
@@ -108,8 +108,7 @@ namespace DT.Inventories.Infrastructure.Database.Migrations
                     QuantityDelta = table.Column<int>(type: "integer", nullable: false),
                     movement_type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     RelatedOrderId = table.Column<Guid>(type: "uuid", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false)
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'")
                 },
                 constraints: table =>
                 {
