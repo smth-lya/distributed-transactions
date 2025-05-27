@@ -1,7 +1,7 @@
 using DT.Shared.Messaging;
 using RabbitMQ.Client;
 
-namespace DT.Inventories.Messaging;
+namespace DT.Inventories.Infrastructure.Messaging;
 
 public class RabbitMqBroker : RabbitMqBrokerBase
 {
@@ -13,14 +13,11 @@ public class RabbitMqBroker : RabbitMqBrokerBase
         var services = new[] { "inventory" };
         foreach (var service in services)
         {
-            var queueName = $"{service}.saga.orchestration.commands";
+            var exchangeName = $"{service}.saga.orchestration.commands";
         
-            await DeclareQueueAsync(queueName);
-            await DeclareQueueBindAsync(queueName, "saga.orchestration.commands", service);
+            await DeclareExchangeAsync(exchangeName, ExchangeType.Fanout);
+            await DeclareExchangeBindAsync(exchangeName, "saga.orchestration.commands", service);
         }
-
-        await DeclareQueueAsync("saga.orchestrator.events");
-        await DeclareQueueBindAsync("saga.orchestrator.events", "saga.orchestration.events", string.Empty);
         
         // Choreography
 

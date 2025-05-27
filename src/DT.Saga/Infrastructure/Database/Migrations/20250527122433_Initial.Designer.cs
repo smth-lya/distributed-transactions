@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DT.Saga.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(SagaDbContext))]
-    [Migration("20250527083745_Initial")]
+    [Migration("20250527122433_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -131,13 +131,6 @@ namespace DT.Saga.Infrastructure.Database.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasColumnName("row_version");
 
                     b.Property<string>("SagaType")
                         .IsRequired()

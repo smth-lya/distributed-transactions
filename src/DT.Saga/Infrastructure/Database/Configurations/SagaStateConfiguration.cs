@@ -32,10 +32,6 @@ public class SagaStateConfiguration : IEntityTypeConfiguration<SagaState>
             .HasColumnName("created_at")
             .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
         
-        builder.Property(s => s.RowVersion)
-            .HasColumnName("row_version")
-            .IsRowVersion();
-
         builder.HasIndex(s => new { s.SagaType, s.IsCompleted })
             .HasDatabaseName("idx_saga_states_type_completed");
         

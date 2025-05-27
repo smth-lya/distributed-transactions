@@ -22,6 +22,7 @@ public class SagaRepository : ISagaRepository
         return await _context.States
             .Include(s => s.Events)
             .Include(s => s.Commands)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(s => s.CorrelationId == correlationId);
     }
 

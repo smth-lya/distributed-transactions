@@ -129,13 +129,6 @@ namespace DT.Saga.Infrastructure.Database.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("order_id");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasColumnName("row_version");
-
                     b.Property<string>("SagaType")
                         .IsRequired()
                         .HasMaxLength(20)

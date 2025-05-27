@@ -20,7 +20,8 @@ services:
       context: ./src
       dockerfile: DT.Saga.Dockerfile
     environment:
-      ConnectionStrings__POSTGRES_CONNECTION: Host=saga-postgres;Port=5432;Database=sagadb;Username=postgres;Password=postgres;sslmode=disable
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__POSTGRES_CONNECTION: Host=saga-postgres;Port=5432;Database=sagadb;Username=postgres;Password=postgres
     depends_on:
       saga-postgres:
         condition: service_healthy
@@ -33,7 +34,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: sagadb
     volumes:
-      - order_postgres:/var/lib/postgresql/data
+      - saga_postgres:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s

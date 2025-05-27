@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using DT.Shared.Interfaces;
 using Microsoft.Extensions.Hosting;
@@ -47,20 +48,28 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
     }
     
     public async Task SubscribeAsync<T>(
-        string queue, 
+        string exchangeName, 
         IConsumer<T> handler,
         CancellationToken cancellationToken = default) where T : IMessage
     {
-        var consumer = new AsyncEventingBasicConsumer(_channel);
+        var channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        var consumer = new AsyncEventingBasicConsumer(channel);
+        
+        QueueDeclareOk queueDeclareResult = await channel.QueueDeclareAsync(cancellationToken: cancellationToken);
+        var queueName = queueDeclareResult.QueueName;
+        
+        await channel.QueueBindAsync(queueName, exchangeName, routingKey: string.Empty, cancellationToken: cancellationToken);
+        
         consumer.ReceivedAsync += async (_, ea) =>
-        {
+        {   
             try
             {
                 if (ea.BasicProperties.Headers != null &&
                     ea.BasicProperties.Headers.TryGetValue("MessageType", out var messageType) &&
-                    messageType as string != typeof(T).Name)
+                    messageType is byte[] buffer &&
+                    Encoding.UTF8.GetString(buffer) != typeof(T).Name)
                 {
-                    await _channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
+                    await channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
                     return;
                 }
                 
@@ -79,18 +88,28 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
                     CorrelationId = Guid.Parse(correlationId),
                     Publisher = this
                 };
+
+                try
+                {
+                    Console.WriteLine(typeof(T).Name);
+                    await handler.Consume(context);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    throw;
+                }
                 
-                await handler.Consume(context);
                 
-                await _channel.BasicAckAsync(ea.DeliveryTag, false, cancellationToken);
+                await channel.BasicAckAsync(ea.DeliveryTag, false, cancellationToken);
             }
             catch (Exception ex)
             {
-                await _channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
+                await channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
             }
         };
         
-        await _channel.BasicConsumeAsync(queue: queue, autoAck: false, consumer: consumer, cancellationToken: cancellationToken);
+        await channel.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer, cancellationToken: cancellationToken);
     }
     
     protected abstract Task ConfigureTopologyAsync(CancellationToken cancellationToken = default);
@@ -119,6 +138,9 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
     protected virtual Task DeclareQueueBindAsync(string queueName, string exchangeName, string routingKey)
         => _channel.QueueBindAsync(queueName, exchangeName, routingKey);
 
+    protected virtual Task DeclareExchangeBindAsync(string destination, string source, string routingKey)
+        => _channel.ExchangeBindAsync(destination, source, routingKey);
+    
     private async Task DeclareCommonInfrastructureAsync(CancellationToken cancellationToken)
     {
         await _channel.ExchangeDeclareAsync(

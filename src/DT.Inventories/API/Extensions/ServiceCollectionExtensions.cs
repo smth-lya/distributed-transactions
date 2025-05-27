@@ -4,7 +4,7 @@ using DT.Inventories.Domain.Contracts.Repositories;
 using DT.Inventories.Domain.Contracts.Services;
 using DT.Inventories.Infrastructure.Database;
 using DT.Inventories.Infrastructure.Database.Repositories;
-using DT.Inventories.Messaging;
+using DT.Inventories.Infrastructure.Messaging;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
