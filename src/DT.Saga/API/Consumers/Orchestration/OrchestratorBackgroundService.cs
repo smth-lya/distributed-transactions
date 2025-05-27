@@ -1,7 +1,7 @@
 using DT.Shared.Interfaces;
 using DT.Shared.Messaging;
 
-namespace DT.Saga.Consumers.Orchestration;
+namespace DT.Saga.API.Consumers.Orchestration;
 
 public abstract class OrchestratorBackgroundService<TConsumer, TMessage> :
     IConsumer<TMessage>, IHostedService

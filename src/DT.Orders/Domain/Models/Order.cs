@@ -14,6 +14,7 @@ public class Order
     {
         Id = Guid.NewGuid();
         CustomerId = customerId;
+        ShippingAddress = shippingAddress;
         Status = OrderStatus.Created;
         CreatedAt = DateTime.UtcNow;
         

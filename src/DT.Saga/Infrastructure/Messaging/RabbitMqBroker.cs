@@ -1,7 +1,7 @@
 using DT.Shared.Messaging;
 using RabbitMQ.Client;
 
-namespace DT.Saga.Messaging;
+namespace DT.Saga.Infrastructure.Messaging;
 
 public class RabbitMqBroker : RabbitMqBrokerBase
 {

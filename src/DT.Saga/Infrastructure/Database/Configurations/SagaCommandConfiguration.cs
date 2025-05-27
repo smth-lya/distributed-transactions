@@ -21,7 +21,7 @@ public class SagaCommandConfiguration : IEntityTypeConfiguration<SagaCommand>
             .HasMaxLength(100);
         
         builder.Property(c => c.Payload)
-            .HasColumnName("command_type")
+            .HasColumnName("payload")
             .HasMaxLength(500);
         
         builder.Property(c => c.Status)

@@ -15,11 +15,12 @@ services:
 
   # Saga (orchestrator) service
   saga-service:
+    container_name: dt-saga-1
     build:
       context: ./src
       dockerfile: DT.Saga.Dockerfile
     environment:
-      POSTGRES_CONNECTION: postgresql://postgres:postgres@saga-postgres:5432/sagadb 
+      ConnectionStrings__POSTGRES_CONNECTION: Host=saga-postgres;Port=5432;Database=sagadb;Username=postgres;Password=postgres;sslmode=disable
     depends_on:
       saga-postgres:
         condition: service_healthy
@@ -58,7 +59,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5001
-      POSTGRES_CONNECTION:  postgresql://postgres:postgres@order-postgres:5432/orderdb
+      ConnectionStrings__POSTGRES_CONNECTION:  Host=order-postgres;Port=5432;Database=orderdb;Username=postgres;Password=postgres
       RABBITMQ_HOST: rabbitmq
     depends_on:
       order-postgres:
@@ -89,7 +90,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5002
-      POSTGRES_CONNECTION:  postgresql://postgres:postgres@inventory-postgres:5432/inventorydb
+      ConnectionStrings__POSTGRES_CONNECTION:  Host=inventory-postgres;Port=5432;Database=inventory;Username=postgres;Password=postgres
     depends_on:
       inventory-postgres:
         condition: service_healthy
@@ -119,7 +120,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5003
-      POSTGRES_CONNECTION:  postgresql://postgres:postgres@payment-postgres:5432/paymentdb
+      ConnectionStrings__POSTGRES_CONNECTION:  Host=payment-postgres;Port=5432;Database=paymentdb;Username=postgres;Password=postgres
     depends_on:
       payment-postgres:
         condition: service_healthy

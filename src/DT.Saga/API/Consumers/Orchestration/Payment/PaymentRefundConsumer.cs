@@ -41,7 +41,6 @@ public class PaymentRefundConsumer : IConsumer<PaymentRefundEvent>, IHostedServi
                     context.CorrelationId);
                 return;
             }
-
             var existingEvent = saga.Events
                 .FirstOrDefault(e => e is { EventType: nameof(PaymentRefundEvent), IsProcessed: true });
 
@@ -99,7 +98,7 @@ public class PaymentRefundConsumer : IConsumer<PaymentRefundEvent>, IHostedServi
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("saga.orchestration.events", this, cancellationToken);
+        await _subscriber.SubscribeAsync("saga.orchestrator.events", this, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

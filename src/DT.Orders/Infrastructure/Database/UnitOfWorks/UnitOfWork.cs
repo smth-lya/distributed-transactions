@@ -10,7 +10,7 @@ public class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(OrderDbContext context, IOrderRepository orderRepository)
     {
-        context = context;
+        _context = context;
         _orderRepository = orderRepository;
     }
     

@@ -1,6 +1,8 @@
 using DT.Saga;
 using DT.Saga.API.Extensions;
 using DT.Saga.Extensions;
+using DT.Saga.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,14 +22,25 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    MigrateDatabase(app);
 }
 
 app.UseHttpsRedirection();
-
 app.UseSerilogRequestLogging();
 
 app.Run();
+return;
 
+static void MigrateDatabase(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<SagaDbContext>();
+
+    if (dbContext.Database.GetPendingMigrations().Any())
+    {
+        dbContext.Database.Migrate();
+    }
+}
 
 /*
 var repo = new InMemoryRepository<OrderState>();

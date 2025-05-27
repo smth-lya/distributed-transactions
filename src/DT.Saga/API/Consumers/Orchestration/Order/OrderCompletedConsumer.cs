@@ -90,7 +90,7 @@ public class OrderCompletedConsumer : IConsumer<OrderCompletedEvent>, IHostedSer
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("saga.orchestration.events", this, cancellationToken);
+        await _subscriber.SubscribeAsync("saga.orchestrator.events", this, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

@@ -8,7 +8,11 @@ public class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem
 {
     public void Configure(EntityTypeBuilder<InventoryItem> builder)
     {
-        builder.ToTable("inventory_items");
+        builder.ToTable("inventory_items", t =>
+        {
+            t.HasCheckConstraint("ck_inventory_items_quantity_non_negative", "quantity >= 0");
+            t.HasCheckConstraint("ck_inventory_items_reserved_lte_quantity", "reserved >= quantity");
+        });
         
         builder.HasKey(ii => ii.Id)
             .HasName("pk_inventory_items");
@@ -28,12 +32,5 @@ public class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem
         builder.Property(ii => ii.Reserved)
             .HasColumnName("reserved")
             .HasDefaultValue("0");
-        
-        builder
-            .ToTable(t => t.HasCheckConstraint("ck_inventory_items_quantity_non_negative", "\"quantity\" >= 0\""));
-        builder
-            .ToTable(t => t.HasCheckConstraint("ck_inventory_items_reserved_lte_quantity", "\"reserved\" >= quantity\""));
-        
-        
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DT.Orders.API.Controllers;
 
 [ApiController]
+[Route("/")]
 public class OrdersController : ControllerBase
 {
     private readonly IOrderService _orderService;
@@ -18,7 +19,7 @@ public class OrdersController : ControllerBase
         _logger = logger;
     }
     
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
     {
         _logger.LogInformation("CreateOrder: Received new order creation request for CustomerId: {CustomerId}", request.CustomerId);

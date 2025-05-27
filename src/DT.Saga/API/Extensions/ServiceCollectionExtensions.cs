@@ -4,7 +4,7 @@ using DT.Saga.API.Consumers.Orchestration.Payment;
 using DT.Saga.Domain.Contracts.Repositories;
 using DT.Saga.Infrastructure.Database;
 using DT.Saga.Infrastructure.Database.Repositories;
-using DT.Saga.Messaging;
+using DT.Saga.Infrastructure.Messaging;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 

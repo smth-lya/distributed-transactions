@@ -1,5 +1,5 @@
+using DT.Saga.Infrastructure.Messaging;
 using DT.Shared.Messaging;
-using DT.Saga.Messaging;
 
 namespace DT.Saga.Extensions;
 

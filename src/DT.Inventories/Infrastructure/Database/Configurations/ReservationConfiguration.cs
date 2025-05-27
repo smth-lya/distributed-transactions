@@ -8,7 +8,10 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
 {
     public void Configure(EntityTypeBuilder<Reservation> builder)
     {
-        builder.ToTable("reservations");
+        builder.ToTable("reservations", t =>
+        {
+            t.HasCheckConstraint("ck_reservations_quantity_positive", "quantity >= 0");
+        });
         
         builder.HasKey(r => r.Id)
             .HasName("pk_reservation");
@@ -22,14 +25,16 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .HasConversion<string>()
             .HasMaxLength(20);
 
+        builder.Property(r => r.Quantity)
+            .HasColumnName("quantity")
+            .HasDefaultValue("0");
+        
         builder.Property(r => r.ReservedAt)
             .HasColumnName("reserved_at")
             .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
         
         builder.HasIndex(r => r.OrderId)
             .HasDatabaseName("idx_reservation_order_id");
-        
-        builder.ToTable(t => t.HasCheckConstraint("ck_reservations_quantity_positive", "\"quantity\" >= 0\""));
         
         builder.HasOne(r => r.Product)
             .WithMany(p => p.Reservations)
