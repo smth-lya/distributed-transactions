@@ -29,6 +29,8 @@ services:
         condition: service_healthy
   saga-postgres:
     image: postgres:latest
+    ports:
+      - "5530:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -69,6 +71,8 @@ services:
         condition: service_healthy
   order-postgres:
     image: postgres:latest
+    ports:
+      - "5531:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -99,6 +103,8 @@ services:
         condition: service_healthy
   inventory-postgres:
     image: postgres:latest
+    ports:
+      - "5532:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -129,6 +135,8 @@ services:
         condition: service_healthy
   payment-postgres:
     image: postgres:latest
+    ports:
+      - "5533:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
