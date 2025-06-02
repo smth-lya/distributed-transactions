@@ -1,9 +1,9 @@
 using System.Text.Json;
-using DT.Inventories.Outbox.Infrastructure.Database;
+using DT.Orders.Outbox.Infrastructure.Database;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
-namespace DT.Inventories.Outbox.Infrastructure.Messaging;
+namespace DT.Orders.Outbox.Infrastructure.Messaging;
 
 public class OutboxProcessor : BackgroundService
 {

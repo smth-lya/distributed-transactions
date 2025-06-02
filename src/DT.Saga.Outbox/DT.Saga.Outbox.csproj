@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\DT.Shared\DT.Shared.csproj" />
+      <ProjectReference Include="..\DT.Shared\DT.Shared.csproj" />
     </ItemGroup>
 
 </Project>

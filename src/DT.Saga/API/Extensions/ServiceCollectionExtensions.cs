@@ -28,6 +28,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ISagaRepository, SagaRepository>();
         
+        services.AddSingleton<IOutboxPublisher, OutboxPublisher>();
+        
         services.AddRabbitMq();
         
         return services;

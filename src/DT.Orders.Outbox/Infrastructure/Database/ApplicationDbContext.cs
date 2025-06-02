@@ -1,7 +1,7 @@
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
-namespace DT.Inventories.Outbox.Infrastructure.Database;
+namespace DT.Orders.Outbox.Infrastructure.Database;
 
 public class ApplicationDbContext : DbContext
 {

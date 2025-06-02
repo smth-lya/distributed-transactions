@@ -30,6 +30,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         
+        services.AddSingleton<IOutboxPublisher, OutboxPublisher>();
+        
         services.AddRabbitMq();
         
         return services;

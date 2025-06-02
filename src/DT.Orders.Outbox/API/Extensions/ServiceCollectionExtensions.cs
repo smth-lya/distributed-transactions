@@ -1,6 +1,5 @@
-using DT.Inventories.Infrastructure.Messaging;
-using DT.Inventories.Outbox.Infrastructure.Database;
-using DT.Inventories.Outbox.Infrastructure.Messaging;
+using DT.Orders.Outbox.Infrastructure.Database;
+using DT.Orders.Outbox.Infrastructure.Messaging;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
