@@ -1,0 +1,6 @@
+@DT.Saga.Outbox_HostAddress = http://localhost:5142
+
+GET {{DT.Saga.Outbox_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

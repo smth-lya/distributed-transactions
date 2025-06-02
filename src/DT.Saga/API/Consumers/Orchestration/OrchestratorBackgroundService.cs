@@ -25,7 +25,7 @@ public abstract class OrchestratorBackgroundService<TConsumer, TMessage> :
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("saga.orchestration.events", this, cancellationToken);
+        await _subscriber.SubscribeAsync("saga.orchestration.events", this, true, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

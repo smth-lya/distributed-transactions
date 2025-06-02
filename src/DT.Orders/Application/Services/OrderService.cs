@@ -4,22 +4,24 @@ using DT.Orders.Domain.Contracts.Services;
 using DT.Orders.Domain.Enums;
 using DT.Orders.Domain.Exceptions;
 using DT.Orders.Domain.Models;
+using DT.Shared.DTOs;
+using DT.Shared.Events.Order;
 
 namespace DT.Orders.Application.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly IOrderRepository _repository;
+    private readonly IOrderRepository _orderRepository;
     private readonly ILogger<OrderService> _logger;
     
-    public OrderService(IOrderRepository repository, ILogger<OrderService> logger)
+    public OrderService(IOrderRepository orderRepository, ILogger<OrderService> logger)
     {
-        _repository = repository;
+        _orderRepository = orderRepository;
         _logger = logger;
     }
 
     public async Task<Order?> GetOrderByIdAsync(Guid id)
-        => await _repository.GetByIdAsync(id);
+        => await _orderRepository.GetByIdAsync(id);
 
     public async Task<Guid> CreateOrderAsync(OrderCreateDto createDto)
     {
@@ -41,14 +43,21 @@ public class OrderService : IOrderService
             orderItems
             );
         
-        await _repository.AddAsync(order);
+        var publishingEvent = new OrderCreatedEvent(
+            order.Id,
+            createDto.Items
+                .Select(i => new OrderItemShared(i.ProductId, i.Quantity, i.Price))
+                .ToList()
+        );
+        
+        await _orderRepository.AddAsync(order);
         
         return order.Id;
     }
 
     public async Task UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus, string reason)
     {
-        var order = await _repository.GetByIdAsync(orderId);
+        var order = await _orderRepository.GetByIdAsync(orderId);
         if (order == null)
         {
             throw new OrderNotFoundException(orderId);
@@ -59,7 +68,7 @@ public class OrderService : IOrderService
         Console.WriteLine(new string('-', 50));
         Console.WriteLine(new string('-', 50));
         Console.WriteLine(order);
-        await _repository.UpdateAsync(order);
+        await _orderRepository.UpdateAsync(order);
         Console.WriteLine(new string('S', 50));
         Console.WriteLine(new string('D', 50));
     }

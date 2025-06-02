@@ -5,6 +5,9 @@ namespace DT.Payments.Infrastructure.Messaging;
 
 public class RabbitMqBroker : RabbitMqBrokerBase
 {
+    public RabbitMqBroker(IOutboxPublisher outboxPublisher) : base(outboxPublisher)
+    { }
+
     protected override async Task ConfigureTopologyAsync(CancellationToken cancellationToken = default)
     {
         await DeclareExchangeAsync("saga.orchestration.commands", ExchangeType.Direct);

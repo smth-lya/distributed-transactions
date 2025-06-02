@@ -55,7 +55,7 @@ public class InventoryCancelReservationConsumer : IConsumer<InventoryCancelReser
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("inventory.saga.orchestration.commands", this, cancellationToken);
+        await _subscriber.SubscribeAsync("inventory.saga.orchestration.commands", this, true, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

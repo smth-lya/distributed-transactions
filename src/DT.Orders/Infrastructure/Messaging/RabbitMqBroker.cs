@@ -5,6 +5,9 @@ namespace DT.Orders.Infrastructure.Messaging;
 
 public class RabbitMqBroker : RabbitMqBrokerBase
 {
+    public RabbitMqBroker(IOutboxPublisher outboxPublisher) : base(outboxPublisher)
+    { }
+
     protected override async Task ConfigureTopologyAsync(CancellationToken cancellationToken = default)
     {
         await DeclareExchangeAsync("saga.orchestration.commands", ExchangeType.Direct);
@@ -21,12 +24,5 @@ public class RabbitMqBroker : RabbitMqBrokerBase
 
         await DeclareQueueAsync("saga.orchestrator.events");
         await DeclareQueueBindAsync("saga.orchestrator.events", "saga.orchestration.events", string.Empty);
-        
-        // Choreography
-
-        await DeclareExchangeAsync("saga.choreography.events", ExchangeType.Fanout);
-        
-        await DeclareQueueAsync("order.saga.choreography.events");
-        await DeclareQueueBindAsync("order.saga.choreography.events", "saga.choreography.events", string.Empty);
     }
 }

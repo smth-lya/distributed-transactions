@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using DT.Orders.Domain.Contracts;
 using DT.Orders.Domain.Enums;
 using DT.Orders.Domain.Exceptions;
+using DT.Shared.Messaging;
 
 namespace DT.Orders.Domain.Models;
 

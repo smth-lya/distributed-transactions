@@ -1,3 +1,5 @@
+using DT.Orders.Domain.Contracts;
+
 namespace DT.Orders.Domain.Models;
 
 public class OrderItem

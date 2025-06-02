@@ -7,11 +7,18 @@ using RabbitMQ.Client.Events;
 
 namespace DT.Shared.Messaging;
 
-public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber, IHostedService, IDisposable, IAsyncDisposable
+public abstract class RabbitMqBrokerBase : IBrokerPublisher, IMessageSubscriber, IHostedService, IDisposable, IAsyncDisposable
 {
     private IConnection _connection = null!;
     private IChannel _channel = null!;
 
+    private readonly IOutboxPublisher _outboxPublisher;
+    
+    public RabbitMqBrokerBase(IOutboxPublisher outboxPublisher)
+    {
+        _outboxPublisher = outboxPublisher;
+    }
+    
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await CreateAsync(cancellationToken);
@@ -24,7 +31,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         await _connection.CloseAsync(cancellationToken);
     }
     
-        public async Task PublishAsync<T>(
+    public async Task PublishAsync<T>(
         T message, 
         string exchange, 
         string routingKey, 
@@ -50,6 +57,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
     public async Task SubscribeAsync<T>(
         string exchangeName, 
         IConsumer<T> handler,
+        bool useOutbox = true,
         CancellationToken cancellationToken = default) where T : IMessage
     {
         var channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
@@ -82,26 +90,23 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
                     return;
                 }
 
-                var context = new ConsumeContext<T>()
+                var context = new ConsumeContext<T>(this, _outboxPublisher)
                 {
                     Message = message,
                     CorrelationId = Guid.Parse(correlationId),
-                    Publisher = this
+                    UseOutbox = useOutbox
                 };
 
                 try
                 {
-                    Console.WriteLine(typeof(T).Name);
                     await handler.Consume(context);
+                    await channel.BasicAckAsync(ea.DeliveryTag, false, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    await channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
                     throw;
                 }
-                
-                
-                await channel.BasicAckAsync(ea.DeliveryTag, false, cancellationToken);
             }
             catch (Exception ex)
             {

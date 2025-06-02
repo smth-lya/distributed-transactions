@@ -6,4 +6,4 @@ namespace DT.Shared.Events.Order;
 public record OrderCreatedEvent(
     Guid OrderId,
     List<OrderItemShared> Items) 
-    : IMessage;
+    : IEvent;
