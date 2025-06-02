@@ -1,6 +1,0 @@
-@DT.Payments.Outbox_HostAddress = http://localhost:5042
-
-GET {{DT.Payments.Outbox_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

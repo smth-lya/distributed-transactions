@@ -43,6 +43,15 @@ services:
       timeout: 5s
       retries: 5
     restart: on-failure
+  saga-outbox:
+    build:
+      context: ./src
+      dockerfile: DT.Saga.Outbox.Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__POSTGRES_CONNECTION: Host=saga-postgres;Port=5432;Database=sagadb;Username=postgres;Password=postgres
+    depends_on:
+      - saga-service
 
   coordinator:
     build:
@@ -85,6 +94,16 @@ services:
       timeout: 5s
       retries: 5
     restart: on-failure
+  order-outbox:
+    build:
+      context: ./src
+      dockerfile: DT.Orders.Outbox.Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__POSTGRES_CONNECTION: Host=order-postgres;Port=5432;Database=orderdb;Username=postgres;Password=postgres
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - order-service
 
   # Inventory service
   inventory-service:
@@ -95,7 +114,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5002
-      ConnectionStrings__POSTGRES_CONNECTION:  Host=inventory-postgres;Port=5432;Database=inventory;Username=postgres;Password=postgres
+      ConnectionStrings__POSTGRES_CONNECTION: Host=inventory-postgres;Port=5432;Database=inventory;Username=postgres;Password=postgres
     depends_on:
       inventory-postgres:
         condition: service_healthy
@@ -117,6 +136,16 @@ services:
       timeout: 5s
       retries: 5
     restart: on-failure
+  inventory-outbox:
+    build:
+      context: ./src
+      dockerfile: DT.Inventories.Outbox.Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__POSTGRES_CONNECTION: Host=inventory-postgres;Port=5432;Database=inventory;Username=postgres;Password=postgres
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - inventory-service
   
   # Payment service  
   payment-service:
@@ -149,6 +178,16 @@ services:
       timeout: 5s
       retries: 5
     restart: on-failure
+  payment-outbox:
+    build:
+      context: ./src
+      dockerfile: DT.Payments.Outbox.Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__POSTGRES_CONNECTION: Host=payment-postgres;Port=5432;Database=paymentdb;Username=postgres;Password=postgres
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - payment-service
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -246,18 +285,6 @@ services:
   #   command: -config.file=/etc/promtail/config.yml
   #   networks:
   #     - backend
-
-  # saga-service:
-  #   build: ./src/SagaService
-  #   networks:
-  #     - backend
-  #   environment:
-  #     <<: *common-env
-  #     REDIS_HOST: redis
-  #     RABBITMQ_HOST: rabbitmq
-  #   depends_on:
-  #     - redis
-  #     - rabbitmq
 
 volumes:
   saga_postgres:
