@@ -75,7 +75,7 @@ public class InventoryReserveConsumer : IConsumer<InventoryReserveCommand>, IHos
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("inventory.saga.orchestration.commands", this, true, cancellationToken);
+        await _subscriber.SubscribeAsync("inventory.saga.orchestration.commands", this, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

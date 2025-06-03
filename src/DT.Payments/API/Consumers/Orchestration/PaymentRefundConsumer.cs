@@ -64,7 +64,7 @@ public class PaymentRefundConsumer : IConsumer<PaymentRefundCommand>, IHostedSer
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("payment.saga.orchestration.commands", this, true, cancellationToken);
+        await _subscriber.SubscribeAsync("payment.saga.orchestration.commands", this, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

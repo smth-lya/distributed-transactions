@@ -5,13 +5,9 @@ namespace DT.Inventories.Infrastructure.Messaging;
 
 public class RabbitMqBroker : RabbitMqBrokerBase
 {
-    public RabbitMqBroker(IOutboxPublisher outboxPublisher) : base(outboxPublisher)
-    { }
-
     protected override async Task ConfigureTopologyAsync(CancellationToken cancellationToken = default)
     {
         await DeclareExchangeAsync("saga.orchestration.commands", ExchangeType.Direct);
-        await DeclareExchangeAsync("saga.orchestration.events", ExchangeType.Fanout);
         
         var services = new[] { "inventory" };
         foreach (var service in services)

@@ -37,7 +37,7 @@ public class OrderCompleteConsumer : IConsumer<OrderCompleteCommand>, IHostedSer
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _subscriber.SubscribeAsync("order.saga.orchestration.commands", this, true, cancellationToken);
+        await _subscriber.SubscribeAsync("order.saga.orchestration.commands", this, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

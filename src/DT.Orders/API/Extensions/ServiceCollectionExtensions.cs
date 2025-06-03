@@ -29,9 +29,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IOrderRepository, OrderRepository>();
 
-        services.AddSingleton<IOutboxPublisher, OutboxPublisher>();
-        
         services.AddRabbitMq();
+        services.Decorate<IMessagePublisher, TransactionalOutboxDecorator>();
         
         return services;
     }

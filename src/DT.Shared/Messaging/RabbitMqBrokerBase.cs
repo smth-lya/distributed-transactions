@@ -7,17 +7,10 @@ using RabbitMQ.Client.Events;
 
 namespace DT.Shared.Messaging;
 
-public abstract class RabbitMqBrokerBase : IBrokerPublisher, IMessageSubscriber, IHostedService, IDisposable, IAsyncDisposable
+public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber, IHostedService, IDisposable, IAsyncDisposable
 {
     private IConnection _connection = null!;
     private IChannel _channel = null!;
-
-    private readonly IOutboxPublisher _outboxPublisher;
-    
-    public RabbitMqBrokerBase(IOutboxPublisher outboxPublisher)
-    {
-        _outboxPublisher = outboxPublisher;
-    }
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -57,7 +50,6 @@ public abstract class RabbitMqBrokerBase : IBrokerPublisher, IMessageSubscriber,
     public async Task SubscribeAsync<T>(
         string exchangeName, 
         IConsumer<T> handler,
-        bool useOutbox = true,
         CancellationToken cancellationToken = default) where T : IMessage
     {
         var channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
@@ -90,11 +82,11 @@ public abstract class RabbitMqBrokerBase : IBrokerPublisher, IMessageSubscriber,
                     return;
                 }
 
-                var context = new ConsumeContext<T>(this, _outboxPublisher)
+                var context = new ConsumeContext<T>
                 {
                     Message = message,
                     CorrelationId = Guid.Parse(correlationId),
-                    UseOutbox = useOutbox
+                    Publisher = this
                 };
 
                 try
