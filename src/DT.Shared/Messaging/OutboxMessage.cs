@@ -27,7 +27,7 @@ public class OutboxMessage
         return new OutboxMessage()
         {
             Id = Guid.NewGuid(),
-            MessageType = typeof(TMessage).Name,
+            MessageType = typeof(TMessage).FullName,
             Payload = JsonSerializer.Serialize(message),
             CreatedAt = DateTime.UtcNow,
             Exchange = exchange,

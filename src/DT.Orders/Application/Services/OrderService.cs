@@ -42,14 +42,7 @@ public class OrderService : IOrderService
             createDto.ShippingAddress,
             orderItems
             );
-        
-        var publishingEvent = new OrderCreatedEvent(
-            order.Id,
-            createDto.Items
-                .Select(i => new OrderItemShared(i.ProductId, i.Quantity, i.Price))
-                .ToList()
-        );
-        
+
         await _orderRepository.AddAsync(order);
         
         return order.Id;
@@ -64,12 +57,6 @@ public class OrderService : IOrderService
         }
         
         order.ChangeStatus(newStatus, reason);
-        Console.WriteLine(new string('-', 50));
-        Console.WriteLine(new string('-', 50));
-        Console.WriteLine(new string('-', 50));
-        Console.WriteLine(order);
         await _orderRepository.UpdateAsync(order);
-        Console.WriteLine(new string('S', 50));
-        Console.WriteLine(new string('D', 50));
     }
 }

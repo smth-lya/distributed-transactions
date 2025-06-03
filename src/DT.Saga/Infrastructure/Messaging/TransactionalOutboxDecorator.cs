@@ -1,3 +1,4 @@
+using DT.Saga.Infrastructure.Database;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,7 @@ public class TransactionalOutboxDecorator : IMessagePublisher
         try
         {
             using var scope = _scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<SagaDbContext>();
             
             var outboxMessage = OutboxMessage.Create(
                 message,

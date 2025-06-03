@@ -1,3 +1,4 @@
+using DT.Payments.Infrastructure.Database;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,7 @@ public class TransactionalOutboxDecorator : IMessagePublisher
         try
         {
             using var scope = _scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<PaymentDbContext>();
             
             var outboxMessage = OutboxMessage.Create(
                 message,
@@ -45,7 +46,8 @@ public class TransactionalOutboxDecorator : IMessagePublisher
                 correlationId ?? Guid.NewGuid());
             
             await dbContext.Set<OutboxMessage>().AddAsync(outboxMessage, cancellationToken);
-            
+            await dbContext.SaveChangesAsync(cancellationToken);
+
             // Не вызываем SaveChangesAsync - предполагается, что это сделает вызывающий код
             // в рамках общей транзакции бизнес-операции
 

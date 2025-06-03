@@ -4,6 +4,7 @@ using DT.Orders.Domain.Contracts.Repositories;
 using DT.Orders.Domain.Contracts.Services;
 using DT.Orders.Infrastructure.Database;
 using DT.Orders.Infrastructure.Database.Repositories;
+using DT.Orders.Infrastructure.Decorators;
 using DT.Orders.Infrastructure.Messaging;
 using DT.Shared.Messaging;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IOrderRepository, OrderRepository>();
 
+        services.Decorate<IOrderService, EventPublishingOrderServiceDecorator>();
+        
         services.AddRabbitMq();
         services.Decorate<IMessagePublisher, TransactionalOutboxDecorator>();
         

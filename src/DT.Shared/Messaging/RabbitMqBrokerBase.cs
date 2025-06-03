@@ -1,5 +1,7 @@
 using System.Text;
 using System.Text.Json;
+using System.Threading.Channels;
+using DT.Shared.Events.Order;
 using DT.Shared.Interfaces;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
@@ -31,7 +33,8 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         Guid? correlationId, 
         CancellationToken cancellationToken = default) where T : IMessage
     {
-        var body = JsonSerializer.SerializeToUtf8Bytes(message);
+        Console.WriteLine("PUUUUUUUUUUUUUUUUUUUUUBLISH");
+        var body = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType());
         var prop = new BasicProperties
         {
             ContentType = "application/json",
@@ -39,7 +42,7 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
             CorrelationId = correlationId?.ToString() ?? Guid.NewGuid().ToString(),
             Headers = new Dictionary<string, object?>
             {
-                ["MessageType"] = typeof(T).Name,
+                ["MessageType"] = message.GetType().FullName,
             }
         };
         
@@ -59,7 +62,6 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         var queueName = queueDeclareResult.QueueName;
         
         await channel.QueueBindAsync(queueName, exchangeName, routingKey: string.Empty, cancellationToken: cancellationToken);
-        
         consumer.ReceivedAsync += async (_, ea) =>
         {   
             try
@@ -67,11 +69,13 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
                 if (ea.BasicProperties.Headers != null &&
                     ea.BasicProperties.Headers.TryGetValue("MessageType", out var messageType) &&
                     messageType is byte[] buffer &&
-                    Encoding.UTF8.GetString(buffer) != typeof(T).Name)
+                    Encoding.UTF8.GetString(buffer) != typeof(T).FullName)
                 {
                     await channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
                     return;
                 }
+
+                Console.WriteLine(typeof(T).FullName);
                 
                 var correlationId = ea.BasicProperties.CorrelationId ?? Guid.NewGuid().ToString();
                 
@@ -81,14 +85,14 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
                     await _channel.BasicNackAsync(ea.DeliveryTag, false, false, cancellationToken);
                     return;
                 }
-
+                
                 var context = new ConsumeContext<T>
                 {
                     Message = message,
                     CorrelationId = Guid.Parse(correlationId),
                     Publisher = this
                 };
-
+                
                 try
                 {
                     await handler.Consume(context);

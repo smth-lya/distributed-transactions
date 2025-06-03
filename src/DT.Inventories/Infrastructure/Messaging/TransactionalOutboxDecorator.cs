@@ -23,7 +23,9 @@ public class TransactionalOutboxDecorator : IMessagePublisher
         string routingKey,
         Guid? correlationId,
         CancellationToken cancellationToken = default) where T : IMessage
-    { 
+    {
+        Console.WriteLine(new string('T', 50));
+        Console.WriteLine(new string('T', 50));
         await SaveToOutboxAsync(message, exchange, routingKey, correlationId, cancellationToken);
     }
 
@@ -36,7 +38,7 @@ public class TransactionalOutboxDecorator : IMessagePublisher
         try
         {
             using var scope = _scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
             
             var outboxMessage = OutboxMessage.Create(
                 message,
@@ -45,12 +47,13 @@ public class TransactionalOutboxDecorator : IMessagePublisher
                 correlationId ?? Guid.NewGuid());
             
             await dbContext.Set<OutboxMessage>().AddAsync(outboxMessage, cancellationToken);
-            
+            await dbContext.SaveChangesAsync(cancellationToken);
+
             // Не вызываем SaveChangesAsync - предполагается, что это сделает вызывающий код
             // в рамках общей транзакции бизнес-операции
 
             //await dbContext.SaveChangesAsync(cancellationToken);
-            
+
             _logger.LogDebug("Message added to outbox in transaction");
         }
         catch (Exception ex)

@@ -1,3 +1,4 @@
+using System.Reflection;
 using DT.Payments.Domain.Models;
 using DT.Payments.Infrastructure.Database.Configurations;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,6 @@ public class PaymentDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

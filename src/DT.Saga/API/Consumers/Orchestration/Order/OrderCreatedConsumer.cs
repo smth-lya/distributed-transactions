@@ -50,7 +50,7 @@ public class OrderCreatedConsumer : IConsumer<OrderCreatedEvent>, IHostedService
                 IsCompleted = false,
                 CreatedAt = DateTime.UtcNow,
             };
-        
+            
             await repository.AddSagaAsync(saga);
         
             await repository.AddEventAsync(new SagaEvent()
