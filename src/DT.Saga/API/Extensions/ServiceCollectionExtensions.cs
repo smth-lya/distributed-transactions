@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISagaRepository, SagaRepository>();
         
         services.AddRabbitMq();
-        services.AddSingleton<IMessagePublisher, TransactionalOutboxDecorator>();
+        services.Decorate<IMessagePublisher, TransactionalOutboxDecorator>();
         
         return services;
     }
