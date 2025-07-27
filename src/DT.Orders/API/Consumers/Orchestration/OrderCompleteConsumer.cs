@@ -46,3 +46,5 @@ public class OrderCompleteConsumer : IConsumer<OrderCompleteCommand>, IHostedSer
         return Task.CompletedTask;
     }
 }
+
+

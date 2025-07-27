@@ -33,7 +33,6 @@ public abstract class RabbitMqBrokerBase : IMessagePublisher, IMessageSubscriber
         Guid? correlationId, 
         CancellationToken cancellationToken = default) where T : IMessage
     {
-        Console.WriteLine("PUUUUUUUUUUUUUUUUUUUUUBLISH");
         var body = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType());
         var prop = new BasicProperties
         {

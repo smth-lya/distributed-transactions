@@ -38,3 +38,4 @@ public class OutboxMessage
     
     public void MarkAsProcessed() => ProcessedAt = DateTime.UtcNow;
 }
+

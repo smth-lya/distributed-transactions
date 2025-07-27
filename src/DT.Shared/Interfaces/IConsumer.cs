@@ -6,3 +6,5 @@ public interface IConsumer<T> where T : IMessage
 {
     Task Consume(ConsumeContext<T> context);
 }
+
+
